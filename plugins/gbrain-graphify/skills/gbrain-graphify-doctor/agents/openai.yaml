@@ -1,0 +1,4 @@
+interface:
+  display_name: "Diagnose GBrain + Graphify"
+  short_description: "Check tools, stdio MCP, and graph health"
+  default_prompt: "Diagnose my GBrain and Graphify integration."

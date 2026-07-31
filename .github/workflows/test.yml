@@ -1,0 +1,51 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Canonical repository is reachable
+        shell: bash
+        run: git ls-remote --exit-code https://github.com/Jeffrey1799/gbrain-graphify-bundle.git HEAD
+      - name: Python tests
+        run: python -m unittest discover -s tests -v
+      - name: Python syntax
+        run: python -m py_compile plugins/gbrain-graphify/scripts/configure_antigravity.py plugins/gbrain-graphify/scripts/doctor.py tests/test_plugin.py
+      - name: PowerShell 5.1 parse and Tier-1 dry-runs
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path '.\bootstrap.ps1'), [ref]$null, [ref]$errors) > $null
+          if ($errors.Count) { $errors | ForEach-Object Message; exit 1 }
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path '.\plugins\gbrain-graphify\scripts\setup.ps1'), [ref]$null, [ref]$errors) > $null
+          if ($errors.Count) { $errors | ForEach-Object Message; exit 1 }
+          foreach ($agent in @('codex', 'claude', 'antigravity')) {
+            powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\bootstrap.ps1 -Agent $agent -DryRun
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+      - name: Bash syntax and Tier-1 dry-runs
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          bash -n bootstrap.sh
+          bash -n plugins/gbrain-graphify/scripts/setup.sh
+          test_home="$(mktemp -d)"
+          for agent in codex claude antigravity; do
+            HOME="$test_home" bash ./bootstrap.sh --agent "$agent" --dry-run
+          done
+          test -z "$(find "$test_home" -mindepth 1 -print -quit)"

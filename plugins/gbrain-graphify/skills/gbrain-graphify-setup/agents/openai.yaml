@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup GBrain + Graphify"
+  short_description: "Install and configure both knowledge tools"
+  default_prompt: "Set up GBrain and Graphify for my coding agents."

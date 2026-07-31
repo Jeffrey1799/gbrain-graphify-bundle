@@ -1,0 +1,2748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started Guide — GBrain & Graphify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Docs Switcher Styles */
+    #gbrain-container .nav-logo, #graphify-container .nav-logo {
+      display: block !important;
+    }
+
+    .docs-switcher {
+      position: relative;
+      display: flex;
+      background: rgba(15, 23, 42, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 3px;
+      gap: 2px;
+      width: 220px;
+      height: 38px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .switcher-slider {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      height: calc(100% - 6px);
+      width: calc(50% - 4px);
+      background: #ffffff;
+      border-radius: 9999px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1;
+    }
+
+    .switcher-btn {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 12px;
+      height: 100%;
+      background: transparent;
+      border: none;
+      border-radius: 9999px;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.25s ease;
+      z-index: 2;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .switcher-btn:hover {
+      color: var(--text);
+    }
+
+    .switcher-btn.active {
+      color: var(--accent);
+    }
+
+    .switcher-icon {
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .switcher-btn.active .switcher-icon {
+      transform: scale(1.1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .docs-switcher {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .switcher-slider {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    /* Mobile Responsive Layout overrides to keep switcher visible */
+    @media (max-width: 1023px) {
+      #gbrain-container .nav, #graphify-container .nav {
+        display: flex !important;
+        align-items: center !important;
+        gap: 16px !important;
+        justify-content: space-between !important;
+      }
+      #gbrain-container .nav-logo, #graphify-container .nav-logo {
+        display: block !important;
+        margin-right: auto !important;
+      }
+      #gbrain-container .nav-inner, #graphify-container .nav-inner {
+        margin: 0 !important;
+        flex: 1 !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #gbrain-container .nav, #graphify-container .nav {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        padding: 10px 12px !important;
+      }
+      #gbrain-container .nav-logo, #graphify-container .nav-logo {
+        width: 100% !important;
+        margin: 0 !important;
+      }
+      #gbrain-container .nav-inner, #graphify-container .nav-inner {
+        flex: 0 0 100% !important;
+        min-width: 0 !important;
+      }
+      #gbrain-container .nav-item-group, #graphify-container .nav-item-group {
+        display: contents !important;
+      }
+      #gbrain-container .nav-sub, #graphify-container .nav-sub {
+        display: none !important;
+      }
+      #gbrain-container .step, #graphify-container .step {
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 18px 16px !important;
+      }
+    }
+
+    /* Scoped document styles */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+:root {
+  --bg: #fcfaf8;
+  --bg-card: #faf7f3;
+  --bg-hover: #f5efe6;
+  --border: #f0ebe5;
+  --text: #1f2329;
+  --text-secondary: rgba(0, 0, 0, 0.55);
+  --text-tertiary: rgba(0, 0, 0, 0.35);
+  --accent: #ff6700;
+  --accent-dim: #e05300;
+  --purple: #7c3aed;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --cyan: #0891b2;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --sidebar-width: 290px;
+  --content-max-width: 820px;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.01);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.02);
+}#gbrain-container * { margin: 0; padding: 0; box-sizing: border-box; }#gbrain-container {
+  font-family: "PingFang SC", -apple-system, "MiSans", "Plus Jakarta Sans", "Noto Sans SC", sans-serif;
+  background-color: var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}#gbrain-container code, #gbrain-container pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875em;
+}#gbrain-container .hero, #gbrain-container .content, #gbrain-container .footer {
+  width: 100%;
+}#gbrain-container .layout-container {
+  width: 100%;
+}#gbrain-container .main-wrapper {
+  width: 100%;
+}#gbrain-container .nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}#gbrain-container .nav-logo, #gbrain-container .nav-footer {
+  display: none;
+}#gbrain-container .nav-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 0;
+}#gbrain-container .nav-inner::-webkit-scrollbar { display: none; }#gbrain-container .nav a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 14.5px; font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}#gbrain-container .nav a:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}#gbrain-container .nav a.active {
+  color: var(--accent);
+  background: #fff6ed;
+}@media (min-width: 1024px) {#gbrain-container {
+    display: block;
+  }#gbrain-container .nav {
+    position: sticky;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+    background: var(--bg);
+    z-index: 100;
+    padding: 48px 24px 48px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    flex-shrink: 0;
+  }#gbrain-container .nav-logo {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    padding-left: 12px;
+    letter-spacing: -0.02em;
+  }#gbrain-container .nav-footer {
+    display: block;
+    margin-top: auto;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding-left: 12px;
+    line-height: 1.5;
+    border-top: 1px dashed var(--border);
+    padding-top: 16px;
+  }#gbrain-container .nav-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    width: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-left: 1px solid var(--border);
+    padding-left: 4px;
+  }#gbrain-container .nav a {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+  }#gbrain-container .nav a:hover {
+    padding-left: 20px;
+    color: var(--accent);
+    background: var(--bg-hover);
+  }#gbrain-container .nav a.active {
+    background: #fff6ed;
+    color: var(--accent);
+    padding-left: 20px;
+  }#gbrain-container .nav-item-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }#gbrain-container .nav-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 12px;
+    margin-top: 2px;
+    margin-bottom: 6px;
+  }#gbrain-container .nav-sub .sub-nav-item {
+    font-size: 13px !important;
+    color: var(--text-secondary);
+    padding: 6px 16px !important;
+    opacity: 0.85;
+    background: transparent !important;
+  }#gbrain-container .nav-sub .sub-nav-item:hover {
+    opacity: 1;
+    color: var(--accent);
+    padding-left: 20px !important;
+  }#gbrain-container .nav-sub .sub-nav-item.active {
+    color: var(--accent) !important;
+    background: #fff6ed !important;
+    opacity: 1;
+    padding-left: 20px !important;
+  }#gbrain-container .layout-container {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    padding: 0 40px;
+  }#gbrain-container .main-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }#gbrain-container .hero {
+    padding: 80px 0 40px 80px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }#gbrain-container .content {
+    padding: 48px 0 80px 80px;
+  }#gbrain-container .footer {
+    padding: 48px 0 48px 80px;
+    border-top: 1px solid var(--border);
+  }}@media (max-width: 1023px) {#gbrain-container .hero {
+    padding: 60px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }#gbrain-container .content {
+    padding: 32px 20px 60px;
+    max-width: 760px;
+    margin: 0 auto;
+  }#gbrain-container .footer {
+    padding: 32px 24px;
+    text-align: center;
+  }}#gbrain-container .hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 100px;
+  background: #fff6ed;
+  border: 1px solid rgba(255, 103, 0, 0.15);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}#gbrain-container .hero h1 {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+  color: var(--text);
+}@media (max-width: 640px) {#gbrain-container .hero h1 {
+    font-size: 30px;
+  }}#gbrain-container .hero p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  margin: 0 auto;
+  line-height: 1.75;
+}@media (min-width: 1024px) {#gbrain-container .hero p {
+    margin: 0;
+    white-space: nowrap;
+  }}#gbrain-container .section {
+  margin-bottom: 72px;
+}#gbrain-container .section-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}#gbrain-container .section-head::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--accent);
+}#gbrain-container .section-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff6ed;
+  border: 1px solid rgba(255, 103, 0, 0.25);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}#gbrain-container .section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}#gbrain-container .section h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-top: 36px;
+  color: var(--accent);
+}#gbrain-container .section p, #gbrain-container .section li {
+  color: var(--text-secondary);
+  font-size: 15.5px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}#gbrain-container .section ul, #gbrain-container .section ol {
+  padding-left: 24px;
+  margin-bottom: 20px;
+}#gbrain-container .section li {
+  margin-bottom: 8px;
+}#gbrain-container .section li::marker {
+  color: var(--accent);
+}#gbrain-container .card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 24px 28px;
+  margin: 20px 0;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}#gbrain-container .card:hover {
+  border-color: rgba(255, 103, 0, 0.3);
+  background-color: var(--bg-hover);
+}#gbrain-container .card-title {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text);
+  margin-bottom: 16px;
+}#gbrain-container .card-icon {
+  font-size: 20px;
+}#gbrain-container .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}@media (max-width: 640px) {#gbrain-container .grid-2 { grid-template-columns: 1fr; }}#gbrain-container pre {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.65;
+  margin: 16px 0;
+  color: #334155;
+  position: relative;
+  box-shadow: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}#gbrain-container pre:hover {
+  border-color: rgba(108, 140, 255, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06), 0 0 15px rgba(255, 103, 0, 0.07);
+}#gbrain-container .prompt-box { background: rgba(255, 103, 0, 0.035); border: 1px solid rgba(255, 103, 0, 0.2); border-radius: var(--radius-sm); padding: 8px 14px; margin: 14px 0 22px; transition: border-color 0.25s ease, box-shadow 0.25s ease; }#gbrain-container .prompt-box:hover { border-color: rgba(255, 103, 0, 0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.06), 0 0 15px rgba(255, 103, 0, 0.07); }#gbrain-container .prompt-label { color: var(--accent); font-size: 13px; font-weight: 700; margin-bottom: 4px !important; }#gbrain-container .prompt-box pre { border: none; margin: 0; padding: 6px 0; background: transparent; color: var(--text); white-space: pre-wrap; word-break: break-word; max-height: 200px; overflow-y: auto; box-shadow: none; }#gbrain-container code {
+  font-family: var(--font-mono);
+}#gbrain-container code .comment { color: #5c6370; font-style: italic; }#gbrain-container code .keyword { color: var(--purple); font-weight: 500; }#gbrain-container code .string { color: var(--green); }#gbrain-container code .fn { color: var(--cyan); }#gbrain-container code .var { color: var(--amber); }#gbrain-container code .op { color: var(--red); }#gbrain-container p code, #gbrain-container li code, #gbrain-container summary code {
+  background: rgba(79, 70, 229, 0.05);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.10);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.88em;
+  font-family: var(--font-mono);
+  word-break: break-word;
+}#gbrain-container .step {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  position: relative;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}#gbrain-container .step:hover {
+  border-color: rgba(255, 103, 0, 0.2);
+}#gbrain-container .step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0;
+}#gbrain-container .step-body {
+  flex: 1;
+  min-width: 0;
+}#gbrain-container .step-body p {
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: var(--text-secondary);
+}#gbrain-container .step-body p strong {
+  color: var(--text);
+}#gbrain-container .step-body p:last-child {
+  margin-bottom: 0;
+}#gbrain-container .diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 24px;
+  margin: 32px 0;
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  position: relative;
+}#gbrain-container .diagram-box {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 103, 0, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 150px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+  position: relative;
+  z-index: 2;
+}#gbrain-container .diagram-box:hover {
+  border-color: var(--accent);
+}#gbrain-container .diagram-box .label {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}#gbrain-container .diagram-box .value {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}#gbrain-container .diagram-arrow {
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: 300;
+  animation: pulse-arrow 2.5s infinite ease-in-out;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}@keyframes pulse-arrow {0%, 100% { opacity: 0.4; transform: translateX(0); }50% { opacity: 1; transform: translateX(5px); }}#gbrain-container .diagram-label {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13.5px;
+  margin-top: -16px;
+  margin-bottom: 32px;
+  font-style: italic;
+}#gbrain-container .info {
+  position: relative;
+  padding: 16px 24px;
+  border-radius: var(--radius-sm);
+  margin: 24px 0;
+  font-size: 14.5px;
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  color: var(--text-secondary);
+}#gbrain-container .info strong {
+  color: var(--text);
+  font-weight: 700;
+}#gbrain-container .info-tip {
+  background: #fff6ed;
+  border-color: rgba(255, 103, 0, 0.1);
+  border-left-color: var(--accent);
+}#gbrain-container .info-warn {
+  background: rgba(217, 119, 6, 0.05);
+  border-color: rgba(217, 119, 6, 0.1);
+  border-left-color: var(--amber);
+}#gbrain-container .info-experience {
+  background: rgba(22, 163, 74, 0.04);
+  border-color: rgba(22, 163, 74, 0.1);
+  border-left-color: var(--green);
+}#gbrain-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 24px 0;
+  font-size: 14.5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.5);
+}#gbrain-container th, #gbrain-container td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}#gbrain-container th:last-child, #gbrain-container td:last-child {
+  border-right: none;
+}#gbrain-container tr:last-child td {
+  border-bottom: none;
+}#gbrain-container th {
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}#gbrain-container td {
+  color: var(--text-secondary);
+}#gbrain-container tr:hover td {
+  background: rgba(15, 23, 42, 0.015);
+  color: var(--text);
+}#gbrain-container details {
+  margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}#gbrain-container details:hover {
+  border-color: rgba(108, 140, 255, 0.2);
+  box-shadow: var(--shadow-sm);
+}#gbrain-container details[open] {
+  border-color: rgba(108, 140, 255, 0.3);
+  box-shadow: var(--shadow-md);
+}#gbrain-container summary {
+  cursor: pointer;
+  padding: 18px 22px;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}#gbrain-container summary::-webkit-details-marker {
+  display: none;
+}#gbrain-container summary:hover {
+  background-color: var(--bg-hover);
+}#gbrain-container summary::after {
+  content: "+";
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--accent);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}#gbrain-container details[open] summary::after {
+  transform: rotate(45deg);
+  color: var(--purple);
+}#gbrain-container details[open] summary {
+  border-bottom: 1px solid var(--border);
+  background-color: rgba(15, 23, 42, 0.02);
+}#gbrain-container details[open] .faq-content {
+  padding: 20px 24px;
+  background: transparent;
+  border: none;
+  margin-bottom: 0;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  line-height: 1.8;
+  animation: slide-down 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}@keyframes slide-down {from { opacity: 0; transform: translateY(-8px); }to { opacity: 1; transform: translateY(0); }}#gbrain-container .faq-content p {
+  margin-bottom: 12px;
+}#gbrain-container .faq-content p:last-child {
+  margin-bottom: 0;
+}#gbrain-container .footer {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13.5px;
+  border-top: 1px solid var(--border);
+}#gbrain-container .footer p {
+  margin-bottom: 6px;
+}@media print {#gbrain-container {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }#gbrain-container .nav {
+    display: none !important;
+  }#gbrain-container .content, #gbrain-container .hero, #gbrain-container .footer {
+    grid-column: 1 / span 2 !important;
+    margin-left: 0 !important;
+    max-width: 100% !important;
+    padding: 20px !important;
+  }#gbrain-container .card, #gbrain-container .step, #gbrain-container .diagram-box, #gbrain-container pre, #gbrain-container details {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: none !important;
+    color: #0f172a !important;
+  }#gbrain-container pre {
+    background: #f1f5f9 !important;
+  }#gbrain-container p code, #gbrain-container li code {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+  }}
+    
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+:root {
+  --bg: #fcfaf8;
+  --bg-card: #faf7f3;
+  --bg-hover: #f5efe6;
+  --border: #f0ebe5;
+  --text: #1f2329;
+  --text-secondary: rgba(0, 0, 0, 0.55);
+  --text-tertiary: rgba(0, 0, 0, 0.35);
+  --accent: #ff6700;
+  --accent-dim: #e05300;
+  --purple: #7c3aed;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --cyan: #0891b2;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --sidebar-width: 290px;
+  --content-max-width: 820px;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.01);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.02);
+}#graphify-container * { margin: 0; padding: 0; box-sizing: border-box; }#graphify-container {
+  font-family: "PingFang SC", -apple-system, "MiSans", "Plus Jakarta Sans", "Noto Sans SC", sans-serif;
+  background-color: var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}#graphify-container code, #graphify-container pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875em;
+}#graphify-container .hero, #graphify-container .content, #graphify-container .footer {
+  width: 100%;
+}#graphify-container .layout-container {
+  width: 100%;
+}#graphify-container .main-wrapper {
+  width: 100%;
+}#graphify-container .nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}#graphify-container .nav-logo, #graphify-container .nav-footer {
+  display: none;
+}#graphify-container .nav-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 0;
+}#graphify-container .nav-inner::-webkit-scrollbar { display: none; }#graphify-container .nav a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 14.5px; font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}#graphify-container .nav a:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}#graphify-container .nav a.active {
+  color: var(--accent);
+  background: #fff6ed;
+}@media (min-width: 1024px) {#graphify-container {
+    display: block;
+  }#graphify-container .nav {
+    position: sticky;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+    background: var(--bg);
+    z-index: 100;
+    padding: 48px 24px 48px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    flex-shrink: 0;
+  }#graphify-container .nav-logo {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    padding-left: 12px;
+    letter-spacing: -0.02em;
+  }#graphify-container .nav-footer {
+    display: block;
+    margin-top: auto;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding-left: 12px;
+    line-height: 1.5;
+    border-top: 1px dashed var(--border);
+    padding-top: 16px;
+  }#graphify-container .nav-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    width: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-left: 1px solid var(--border);
+    padding-left: 4px;
+  }#graphify-container .nav a {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+  }#graphify-container .nav a:hover {
+    padding-left: 20px;
+    color: var(--accent);
+    background: var(--bg-hover);
+  }#graphify-container .nav a.active {
+    background: #fff6ed;
+    color: var(--accent);
+    padding-left: 20px;
+  }#graphify-container .nav-item-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }#graphify-container .nav-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 12px;
+    margin-top: 2px;
+    margin-bottom: 6px;
+  }#graphify-container .nav-sub .sub-nav-item {
+    font-size: 13px !important;
+    color: var(--text-secondary);
+    padding: 6px 16px !important;
+    opacity: 0.85;
+    background: transparent !important;
+  }#graphify-container .nav-sub .sub-nav-item:hover {
+    opacity: 1;
+    color: var(--accent);
+    padding-left: 20px !important;
+  }#graphify-container .nav-sub .sub-nav-item.active {
+    color: var(--accent) !important;
+    background: #fff6ed !important;
+    opacity: 1;
+    padding-left: 20px !important;
+  }#graphify-container .layout-container {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    padding: 0 40px;
+  }#graphify-container .main-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }#graphify-container .hero {
+    padding: 80px 0 40px 80px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }#graphify-container .content {
+    padding: 48px 0 80px 80px;
+  }#graphify-container .footer {
+    padding: 48px 0 48px 80px;
+    border-top: 1px solid var(--border);
+  }}@media (max-width: 1023px) {#graphify-container .hero {
+    padding: 60px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }#graphify-container .content {
+    padding: 32px 20px 60px;
+    max-width: 760px;
+    margin: 0 auto;
+  }#graphify-container .footer {
+    padding: 32px 24px;
+    text-align: center;
+  }}#graphify-container .hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 100px;
+  background: #fff6ed;
+  border: 1px solid rgba(255, 103, 0, 0.15);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}#graphify-container .hero h1 {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+  color: var(--text);
+}@media (max-width: 640px) {#graphify-container .hero h1 {
+    font-size: 30px;
+  }}#graphify-container .hero p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  margin: 0 auto;
+  line-height: 1.75;
+}@media (min-width: 1024px) {#graphify-container .hero p {
+    margin: 0;
+    white-space: nowrap;
+  }}#graphify-container .section {
+  margin-bottom: 72px;
+}#graphify-container .section-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}#graphify-container .section-head::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--accent);
+}#graphify-container .section-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff6ed;
+  border: 1px solid rgba(255, 103, 0, 0.25);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}#graphify-container .section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}#graphify-container .section h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-top: 36px;
+  color: var(--accent);
+}#graphify-container .section p, #graphify-container .section li {
+  color: var(--text-secondary);
+  font-size: 15.5px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}#graphify-container .section ul, #graphify-container .section ol {
+  padding-left: 24px;
+  margin-bottom: 20px;
+}#graphify-container .section li {
+  margin-bottom: 8px;
+}#graphify-container .section li::marker {
+  color: var(--accent);
+}#graphify-container .card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 24px 28px;
+  margin: 20px 0;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}#graphify-container .card:hover {
+  border-color: rgba(255, 103, 0, 0.3);
+  background-color: var(--bg-hover);
+}#graphify-container .card-title {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text);
+  margin-bottom: 16px;
+}#graphify-container .card-icon {
+  font-size: 20px;
+}#graphify-container .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}@media (max-width: 640px) {#graphify-container .grid-2 { grid-template-columns: 1fr; }}#graphify-container pre {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.65;
+  margin: 16px 0;
+  color: #334155;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}#graphify-container pre:hover {
+  border-color: rgba(108, 140, 255, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 0 15px rgba(108, 140, 255, 0.05);
+}#graphify-container code {
+  font-family: var(--font-mono);
+}#graphify-container code .comment { color: #5c6370; font-style: italic; }#graphify-container code .keyword { color: var(--purple); font-weight: 500; }#graphify-container code .string { color: var(--green); }#graphify-container code .fn { color: var(--cyan); }#graphify-container code .var { color: var(--amber); }#graphify-container code .op { color: var(--red); }#graphify-container p code, #graphify-container li code, #graphify-container summary code {
+  background: rgba(79, 70, 229, 0.05);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.10);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.88em;
+  font-family: var(--font-mono);
+  word-break: break-word;
+}#graphify-container .step {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  position: relative;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}#graphify-container .step:hover {
+  border-color: rgba(255, 103, 0, 0.2);
+}#graphify-container .step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0;
+}#graphify-container .step-body {
+  flex: 1;
+  min-width: 0;
+}#graphify-container .step-body p {
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: var(--text-secondary);
+}#graphify-container .step-body p strong {
+  color: var(--text);
+}#graphify-container .step-body p:last-child {
+  margin-bottom: 0;
+}#graphify-container .diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 24px;
+  margin: 32px 0;
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  position: relative;
+}#graphify-container .diagram-box {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 103, 0, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 150px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+  position: relative;
+  z-index: 2;
+}#graphify-container .diagram-box:hover {
+  border-color: var(--accent);
+}#graphify-container .diagram-box .label {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}#graphify-container .diagram-box .value {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}#graphify-container .diagram-arrow {
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: 300;
+  animation: pulse-arrow 2.5s infinite ease-in-out;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}@keyframes pulse-arrow {0%, 100% { opacity: 0.4; transform: translateX(0); }50% { opacity: 1; transform: translateX(5px); }}#graphify-container .diagram-label {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13.5px;
+  margin-top: -16px;
+  margin-bottom: 32px;
+  font-style: italic;
+}#graphify-container .info {
+  position: relative;
+  padding: 16px 24px;
+  border-radius: var(--radius-sm);
+  margin: 24px 0;
+  font-size: 14.5px;
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  color: var(--text-secondary);
+}#graphify-container .info strong {
+  color: var(--text);
+  font-weight: 700;
+}#graphify-container .info-tip {
+  background: #fff6ed;
+  border-color: rgba(255, 103, 0, 0.1);
+  border-left-color: var(--accent);
+}#graphify-container .info-warn {
+  background: rgba(217, 119, 6, 0.05);
+  border-color: rgba(217, 119, 6, 0.1);
+  border-left-color: var(--amber);
+}#graphify-container .info-experience {
+  background: rgba(22, 163, 74, 0.04);
+  border-color: rgba(22, 163, 74, 0.1);
+  border-left-color: var(--green);
+}#graphify-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 24px 0;
+  font-size: 14.5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.5);
+}#graphify-container th, #graphify-container td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}#graphify-container th:last-child, #graphify-container td:last-child {
+  border-right: none;
+}#graphify-container tr:last-child td {
+  border-bottom: none;
+}#graphify-container th {
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}#graphify-container td {
+  color: var(--text-secondary);
+}#graphify-container tr:hover td {
+  background: rgba(15, 23, 42, 0.015);
+  color: var(--text);
+}#graphify-container details {
+  margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}#graphify-container details:hover {
+  border-color: rgba(108, 140, 255, 0.2);
+  box-shadow: var(--shadow-sm);
+}#graphify-container details[open] {
+  border-color: rgba(108, 140, 255, 0.3);
+  box-shadow: var(--shadow-md);
+}#graphify-container summary {
+  cursor: pointer;
+  padding: 18px 22px;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}#graphify-container summary::-webkit-details-marker {
+  display: none;
+}#graphify-container summary:hover {
+  background-color: var(--bg-hover);
+}#graphify-container summary::after {
+  content: "+";
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--accent);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}#graphify-container details[open] summary::after {
+  transform: rotate(45deg);
+  color: var(--purple);
+}#graphify-container details[open] summary {
+  border-bottom: 1px solid var(--border);
+  background-color: rgba(15, 23, 42, 0.02);
+}#graphify-container details[open] .faq-content {
+  padding: 20px 24px;
+  background: transparent;
+  border: none;
+  margin-bottom: 0;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  line-height: 1.8;
+  animation: slide-down 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}@keyframes slide-down {from { opacity: 0; transform: translateY(-8px); }to { opacity: 1; transform: translateY(0); }}#graphify-container .faq-content p {
+  margin-bottom: 12px;
+}#graphify-container .faq-content p:last-child {
+  margin-bottom: 0;
+}#graphify-container .footer {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13.5px;
+  border-top: 1px solid var(--border);
+}#graphify-container .footer p {
+  margin-bottom: 6px;
+}@media print {#graphify-container {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }#graphify-container .nav {
+    display: none !important;
+  }#graphify-container .content, #graphify-container .hero, #graphify-container .footer {
+    grid-column: 1 / span 2 !important;
+    margin-left: 0 !important;
+    max-width: 100% !important;
+    padding: 20px !important;
+  }#graphify-container .card, #graphify-container .step, #graphify-container .diagram-box, #graphify-container pre, #graphify-container details {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: none !important;
+    color: #0f172a !important;
+  }#graphify-container pre {
+    background: #f1f5f9 !important;
+  }#graphify-container p code, #graphify-container li code {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+  }}#graphify-container .hero-meta { font-size: 14px; margin-top: 4px; margin-bottom: 16px; color: var(--text-secondary); }#graphify-container .hero-meta a { color: var(--accent); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--accent); padding-bottom: 1px; }#graphify-container .prompt-box { background: rgba(255, 103, 0, 0.035); border: 1px solid rgba(255, 103, 0, 0.2); border-radius: var(--radius-sm); padding: 8px 14px; margin: 14px 0 22px; transition: border-color 0.25s ease, box-shadow 0.25s ease; }#graphify-container .prompt-box:hover { border-color: rgba(255, 103, 0, 0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.06), 0 0 15px rgba(255, 103, 0, 0.07); }#graphify-container .prompt-label { color: var(--accent); font-size: 13px; font-weight: 700; margin-bottom: 4px !important; }#graphify-container .prompt-box pre { border: none; margin: 0; padding: 6px 0; background: transparent; color: var(--text); white-space: pre-wrap; word-break: break-word; max-height: 200px; overflow-y: auto; box-shadow: none; }#graphify-container .tag { display: inline-flex; align-items: center; border: 1px solid rgba(255,103,0,.18); background: rgba(255,103,0,.06); color: var(--accent); border-radius: 999px; padding: 2px 9px; font-size: 12px; font-weight: 600; margin: 2px 4px 2px 0; }#graphify-container .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }@media (max-width: 760px) {#graphify-container .compare-grid { grid-template-columns: 1fr; }}#graphify-container .mini-flow { display: grid; grid-template-columns: repeat(4, minmax(145px,1fr)); gap: 10px; margin: 24px 0; }#graphify-container .mini-flow .flow-cell { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; }#graphify-container .mini-flow .flow-kicker { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }#graphify-container .mini-flow .flow-value { font-size: 14px; font-weight: 700; color: var(--text); }@media (max-width: 800px) {#graphify-container .mini-flow { grid-template-columns: 1fr 1fr; }}@media (max-width: 480px) {#graphify-container .mini-flow { grid-template-columns: 1fr; }}#graphify-container .kbd { font-family: var(--font-mono); border: 1px solid var(--border); background: #fff; border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; font-size: 12px; color: var(--text); }#graphify-container .small-note { font-size: 13px !important; color: var(--text-tertiary) !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Copied & Scoped Bodies -->
+  
+
+<div id="gbrain-container">
+  
+
+<div class="layout-container">
+  <nav class="nav">
+    <div class="nav-logo">
+      <div class="docs-switcher" data-active="gbrain">
+        <div class="switcher-slider"></div>
+        <button class="switcher-btn active" onclick="window.switchDocument('gbrain')">
+          <svg class="switcher-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+          <span>GBrain</span>
+        </button>
+        <button class="switcher-btn" onclick="window.switchDocument('graphify')">
+          <svg class="switcher-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>Graphify</span>
+        </button>
+      </div>
+    </div>
+    <div class="nav-inner">
+      <div class="nav-item-group">
+        <a href="#gbrain-intro-1" class="nav-parent">Overview</a>
+        <div class="nav-sub">
+          <a href="#gbrain-intro-1" class="sub-nav-item">What is GBrain</a>
+          <a href="#gbrain-agent" class="sub-nav-item">Work with AI Agent</a>
+        </div>
+      </div>
+      <a href="#gbrain-quickstart">Quickstart</a>
+      <div class="nav-item-group">
+        <a href="#gbrain-project" class="nav-parent">Project Brain</a>
+        <div class="nav-sub">
+          <a href="#gbrain-project" class="sub-nav-item">Create Project Brain</a>
+          <a href="#gbrain-project-demo" class="sub-nav-item">Real-world Case</a>
+        </div>
+      </div>
+      <a href="#gbrain-faq">FAQs</a>
+      <a href="#gbrain-cheatsheet">Cheatsheet</a>
+    </div>
+    <div class="nav-footer">
+      Author: WeilinZhang<br>
+      <span style="opacity: 0.8;">19523330249@163.com</span>
+    </div>
+  </nav>
+  <div class="main-wrapper">
+    <div class="hero">
+      <div class="hero-badge">Quickstart Guide — GBrain</div>
+      <div style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 10px;">Author: WeilinZhang (19523330249@163.com)</div>
+      <h1>GBrain Knowledge Base</h1>
+      <div style="font-size: 14px; margin-top: 4px; margin-bottom: 16px; color: var(--text-secondary);">
+        Source Repo: <a href="https://github.com/garrytan/gbrain" target="_blank" style="color: var(--accent); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--accent); padding-bottom: 1px;">github.com/garrytan/gbrain</a>
+        <span style="margin: 0 10px; color: var(--border);">|</span>
+        Main Contributors: <strong>Garry Tan</strong> (Creator), <strong>Claude</strong>, <strong>clarajohan</strong>, <strong>Harshaldorlikar</strong>, <strong>pkyanam</strong>
+      </div>
+      <p>An AI-managed project knowledge base — solving the problem of "forgetting code once written" and "losing knowledge when people leave".</p>
+    </div>
+    <div class="content">
+
+<!-- ===================== INTRO ===================== -->
+<div class="section" id="gbrain-intro-1-section">
+  <div class="section-head">
+    <h2>What is GBrain? In simple words</h2>
+  </div>
+
+  <p><strong>GBrain = A local search engine + knowledge base that searches your notes.</strong></p>
+  <p>You dump Markdown notes into it, and you can search them in natural language later. It is not a code generator or a project management tool — it is your team's <strong>second brain</strong>.</p>
+
+  <div class="card">
+    <div class="card-title">What problem does it solve?</div>
+    <ul>
+      <li>When colleagues leave, no one can explain the code logic and architectural decisions clearly.</li>
+      <li>You encountered a bug that was fixed three months ago, but now you have to troubleshoot it from scratch.</li>
+      <li>Every new hire takes weeks to understand the overall picture of the project.</li>
+      <li>Technical documentation is written but never read, and hard to search.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Core Value</div>
+    <table>
+      <tr><th>Before</th><th>After</th></tr>
+      <tr><td>"Why was this module designed this way?" → Go ask people</td><td>→ Search the brain, get the answer instantly</td></tr>
+      <tr><td>"Was this bug fixed before?" → Dig through Git logs</td><td>→ The brain auto-records, direct match next time</td></tr>
+      <tr><td>New colleague onboarding → Read docs + ask people</td><td>→ AI auto-analyzes the project, writes into the brain</td></tr>
+      <tr><td>Ideas and experiences → Write notes that collect dust</td><td>→ Talk to AI, auto-saved in the brain</td></tr>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">What it can do</div>
+      <ul>
+        <li>Search tech notes and architectural decisions</li>
+        <li>Record lessons learned from pitfalls</li>
+        <li>Let AI understand project context</li>
+        <li>Help new employees onboard quickly</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">What it is NOT</div>
+      <ul>
+        <li>Not a code generator</li>
+        <li>Not a project management tool</li>
+        <li>Not CI/CD</li>
+        <li>Not an online service — data is stored locally</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 28px;">GBrain Terminal Commands and Usage</h3>
+  <p>In daily use, you can run commands in the console to manage your knowledge base. Here are the core commonly used commands and their usages:</p>
+
+  <div class="info info-tip" style="margin-top: 16px; margin-bottom: 20px;">
+    <strong style="color: var(--accent); font-size: 16px; display: block; margin-bottom: 6px;">Key Concept:</strong> If you have integrated GBrain with an AI Agent (e.g., Codex or Claude Code), <strong>you do not need to learn or manually execute these terminal commands!</strong> The AI Agent will call the corresponding commands in the background automatically. You only need to talk to the AI Agent in natural language (e.g., <em>"help me find how we fixed the serial deadlock before"</em> or <em>"record the pitfall I just encountered"</em>), and the AI will handle the command invocations to retrieve or save knowledge (see details in the <a href="#gbrain-agent" style="color: var(--accent); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--accent); padding-bottom: 1px;">Work with AI Agent</a> section).
+  </div>
+  
+  <div class="card" style="margin-top: 12px;">
+    <p style="margin-bottom: 8px;"><strong>1. Full-text Search (Offline Keyword Search, Most Common)</strong></p>
+    <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 8px;">Search for all documents containing specific words in the GBrain database, <strong>no API key required, fully offline and standalone</strong>:</p>
+    <pre style="margin-bottom: 16px;">gbrain search double_click</pre>
+    
+    <p style="margin-bottom: 8px;"><strong>2. Conceptual Fuzzy Search (Requires API Key Configuration)</strong></p>
+    <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 8px;">Perform semantic matching using vector models. Even if the search query doesn't appear in the notes, it can match similar meanings:</p>
+    <pre style="margin-bottom: 16px;">gbrain query physics red-dot sampling optimization</pre>
+
+    <p style="margin-bottom: 8px;"><strong>3. Read a Specific Note Precisely</strong></p>
+    <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 8px;">If you know the unique identifier (Slug) of a note, you can fetch and print its full Markdown content directly:</p>
+    <pre style="margin-bottom: 16px;">gbrain get project_overview</pre>
+
+    <p style="margin-bottom: 8px;"><strong>4. Write or Update a Specific Note</strong></p>
+    <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 8px;">Save or update Markdown content to the corresponding Slug in the brain via standard input or file redirection:</p>
+    <pre style="margin-bottom: 16px;">gbrain put project_overview &lt; overview.md</pre>
+
+    <p style="margin-bottom: 8px;"><strong>5. Ingest External Source Files</strong></p>
+    <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 8px;">Import various source files (such as audio/video transcripts, paper PDFs, meeting minutes, etc.) and generate structured notes:</p>
+    <pre style="margin-bottom: 16px;">gbrain ingest meeting_transcript.txt --type transcript</pre>
+
+    <p style="margin-bottom: 8px;"><strong>6. Sync Local Files and Database</strong></p>
+    <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 8px;">Sync local Markdown file modifications back to the local database index:</p>
+    <pre style="margin-bottom: 0;">gbrain sync</pre>
+  </div>
+</div>
+
+
+<!-- ===================== QUICK START ===================== -->
+<div class="section" id="gbrain-quickstart">
+  <div class="section-head">
+    <h2>Quickstart: One-Shot Automatic Setup for GBrain + Graphify</h2>
+  </div>
+  <p>Codex, Claude Code, Google Antigravity, WorkBuddy, Cursor, and VS Code can use the <strong>Unified One-Shot prompt</strong> below. The installer writes local stdio MCP configuration for the selected host; independent CodeBuddy is outside scope.</p>
+
+  <div class="prompt-box" style="margin: 20px 0; border-left: 4px solid var(--accent); background: rgba(108, 140, 255, 0.05); padding: 16px;">
+    <p class="prompt-label" style="font-weight: bold; color: var(--accent); margin-bottom: 8px;">Send to your AI Agent (Codex / Claude Code / Antigravity / WorkBuddy / Cursor / VS Code)</p>
+    <pre style="font-size: 14px; line-height: 1.6; font-family: monospace; white-space: pre-wrap; margin: 0;">I want to install GBrain and Graphify. Read the repository https://github.com/Jeffrey1799/gbrain-graphify-bundle and follow the instructions.</pre>
+  </div>
+  <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px;">After cloning the repository, use the root entrypoint: <code>.\bootstrap.ps1 -Agent codex</code> on Windows or <code>bash ./bootstrap.sh --agent codex</code> on macOS/Linux. The bootstrap then runs the internal <code>gbrain-graphify-setup</code> workflow from this checkout.</p>
+
+  <div class="info info-experience" style="margin-top: 16px;">
+    <strong>Standard 3-Step Automatic Integration Workflow:</strong>
+    <ol style="margin: 8px 0 0 20px; padding: 0; line-height: 1.8;">
+      <li><strong>Step 1: Send the One-Shot Prompt</strong> — The Agent handles environment probes, dependency self-healing (Python 3.10+/Bun), GBrain & Graphify installation, and stdio MCP configuration. Mirrors are used only when explicitly requested.</li>
+      <li><strong>Step 2: Restart Agent Session</strong> — Once completed, <strong>RESTART your Agent session</strong> (or start a new chat window) so the newly registered MCP tools take effect.</li>
+      <li><strong>Step 3: Build BOTH GBrain Project Brain & Graphify Code Graph</strong> — Open your project workspace and send this prompt. The Agent will extract Graphify AST graph (runs <code>graphify extract . --code-only</code> for <code>graphify-out/graph.json</code>) AND distill GBrain project brain markdown cards into <code>~/brain/projects/&lt;project-slug&gt;/</code> with automatic <code>gbrain sync</code>:
+        <pre style="margin: 8px 0; padding: 8px 12px; font-size: 13px; background: rgba(0,0,0,0.03); border-radius: 4px; white-space: pre-wrap;">/project-knowledge-bootstrap Build a project knowledge brain and code graph for this workspace by reading https://github.com/Jeffrey1799/gbrain-graphify-bundle and following the project-knowledge-bootstrap instructions.</pre>
+      </li>
+    </ol>
+  </div>
+
+  <div class="info info-warn" style="margin-top: 16px;"><strong>Supported Hosts:</strong> Codex, Claude Code, Google Antigravity, WorkBuddy, Cursor, and VS Code. User-level MCP is the default; pass <code>--workspace</code> only for project rules.</div>
+
+  <details>
+    <summary>Recovery commands for an existing installation</summary>
+    <div class="faq-content">
+      <p>Keep the root bootstrap as the only installer. If preflight reports a pinned-version mismatch or an MCP conflict, review the existing installation and rerun with only the required explicit authorization:</p>
+      <pre>.\bootstrap.ps1 -Agent codex -Upgrade
+.\bootstrap.ps1 -Agent codex -ReplaceConflicts
+bash ./bootstrap.sh --agent codex --upgrade
+bash ./bootstrap.sh --agent codex --replace-conflicts</pre>
+      <p>Replace <code>codex</code> with <code>claude</code>, <code>antigravity</code>, <code>workbuddy</code>, <code>cursor</code>, or <code>vscode</code>. Invalid JSON is never overwritten; repair or restore that file before rerunning.</p>
+    </div>
+  </details>
+</div>
+
+<!-- ===================== PROJECT BRAIN ===================== -->
+<div class="section" id="gbrain-project">
+  <div class="section-head">
+    <h2>Project Brain: Let AI Understand Your Project Automatically</h2>
+  </div>
+
+  <p>This is the most practical usage of GBrain — <strong>each project has an independent brain</strong>, AI automatically analyzes the code, writes it into the brain, and new colleagues can search it directly.</p>
+
+  <div class="diagram">
+    <div class="diagram-box">
+      <div class="label">Project Left by Former Colleagues</div>
+      <div class="value">Code Repo + Git Records</div>
+    </div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box" style="border-color:var(--accent);">
+      <div class="label">AI Auto Analysis</div>
+      <div class="value" style="color:var(--accent);">Understand Repo & GitDiff + Write Notes</div>
+    </div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box" style="border-color:var(--green);">
+      <div class="label">Write Brain Config</div>
+      <div class="value" style="color:var(--green);">Generate Local GBrain Knowledge Base</div>
+    </div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box">
+      <div class="label">New Colleagues + AI Agent</div>
+      <div class="value">Search & Ask Directly</div>
+    </div>
+  </div>
+  <div class="diagram-label">Project Brain Automatic Creation Flow</div>
+
+  <h3>Create Project Brain in AI Agent</h3>
+  <p>Open your project directory/workspace, start Codex, Claude Code, or Antigravity, and <strong>say this single sentence</strong>:</p>
+
+  <div class="prompt-box">
+    <p class="prompt-label">Copy the prompt below</p>
+    <pre>/project-knowledge-bootstrap Build a project knowledge brain and code graph for this workspace by reading https://github.com/Jeffrey1799/gbrain-graphify-bundle and following the project-knowledge-bootstrap instructions.</pre>
+  </div>
+</div>
+
+<div class="section" id="gbrain-project-demo">
+  <div class="section-head">
+    <h2>Real-world Case: Testing the Project Brain</h2>
+  </div>
+  <p>Here is a real test record — after constructing the project brain, ask the AI directly to verify the retrieval effect:</p>
+
+  <div class="qa-block" style="margin: 12px 0;">
+    <div class="qa-q" style="background: rgba(255, 103, 0, 0.05); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 8px;">
+      <strong style="color: var(--accent);">User:</strong>
+      <code style="font-size: 13px;">Check your project brain. What was the cause of that deadlock bug in the serial worker in this project? How did we fix it?</code>
+    </div>
+    <div class="qa-a" style="background: rgba(22, 163, 74, 0.04); border-left: 3px solid var(--green); padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
+      <strong style="color: var(--green);">AI Agent:</strong>
+      <div style="font-size: 13px; margin-top: 6px; line-height: 1.6;">
+        <p style="margin: 0 0 4px 0;"><strong style="color: var(--green);">[Search Hit]</strong> Hit <code>projects/trackpoint-game/pitfalls</code>, score 0.90 (high_vector_match).</p>
+      </div>
+      <hr style="border: none; border-top: 1px solid rgba(22, 163, 74, 0.15); margin: 10px 0;">
+      <div style="font-size: 13px; line-height: 1.6;">
+        <p style="margin: 0 0 6px 0;"><strong>Deadlock Bug Analysis</strong></p>
+        <p style="margin: 0 0 4px 0;"><strong>Symptom</strong><br>Connect to serial port → Disconnect → Reconnect. The serial port seems to open but <strong>no data flows</strong>, and the game doesn't respond.</p>
+        <p style="margin: 0 0 4px 0;"><strong>Root Cause (v0.0.56)</strong><br>The code directly <strong>transferred</strong> <code>port.readable</code> to the Web Worker:</p>
+        <pre style="background: rgba(0,0,0,0.03); padding: 8px; border-radius: 4px; font-size: 12px; margin: 6px 0; overflow-x: auto;">// Wrong way in v0.0.56
+const readable = selectedPort.readable;
+worker.postMessage({ type: 'START_SERIAL', readable }, [readable]);</pre>
+        <p style="margin: 0 0 4px 0;">The second argument of <code>postMessage</code>, <code>[readable]</code>, transfers the readable stream to the Worker thread, causing the main thread to lose the lock on this stream forever. When <code>port.close()</code> is called, the main thread waits for the readable stream to be unlocked, while the Worker holds the lock → <strong>deadlock</strong>.</p>
+        <p style="margin: 0 0 4px 0;"><strong>Fix (v0.0.57)</strong><br>Introduce a <strong>TransformStream transit channel</strong> so the main thread retains control over the passthrough:</p>
+        <pre style="background: rgba(0,0,0,0.03); padding: 8px; border-radius: 4px; font-size: 12px; margin: 6px 0; overflow-x: auto;">// Correct way in v0.0.57
+const passthrough = new TransformStream&lt;Uint8Array, Uint8Array&gt;();
+serialPipeClosedRef.current = readable.pipeTo(passthrough.writable).catch(() =&gt; {});
+worker.postMessage(
+  { type: 'START_SERIAL', readable: passthrough.readable },
+  [passthrough.readable]
+);</pre>
+        <p style="margin: 0 0 4px 0;">Key changes:</p>
+        <ul style="margin: 0 0 4px 0; padding-left: 20px;">
+          <li>The main thread <strong>pipes</strong> <code>readable</code> to <code>passthrough.writable</code>, preserving the Promise of the pipe.</li>
+          <li>Only <code>passthrough.readable</code> is transferred to the Worker.</li>
+          <li>Await <code>serialPipeClosedRef.current</code> before closing to ensure the pipe is completely drained.</li>
+        </ul>
+        <p style="margin: 0 0 4px 0;"><strong>Lessons</strong><br><strong>Never transfer <code>port.readable</code> directly to a Worker.</strong> Use TransformStream as an intermediary to let the main thread retain lifecycle control. Wait for the pipe to drain before each close.</p>
+        <p style="margin: 0; color: var(--text-tertiary); font-size: 12px;">[Source: git commit <code>fba31c5</code>, <code>c93c977</code>]</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info info-experience" style="margin-top: 12px;">
+    <strong>Verification Conclusion:</strong> After the project brain is built, the AI uses <code>mcp__gbrain__search</code> to invoke GBrain semantic retrieval, hitting the <code>projects/trackpoint-game/pitfalls</code> page, returning <code>evidence: "high_vector_match"</code> (vector similarity 0.90). This indicates the vector model participated in the retrieval, and the knowledge has been successfully indexed and is searchable.
+  </div>
+</div>
+
+
+<!-- ===================== AGENT INTEGRATION ===================== -->
+<div class="section" id="gbrain-agent">
+  <div class="section-head">
+    <h2>Work with AI Agent: Brain-First Mode</h2>
+  </div>
+
+  <div class="card" style="background: rgba(0, 180, 216, 0.03); border-color: rgba(0, 180, 216, 0.15); margin-bottom: 24px;">
+    <div class="card-title" style="color: var(--cyan); font-size: 15px; font-weight: bold; border-left: 3px solid var(--cyan); padding-left: 8px;">Key Concept: From "Manual Search" to "Auto-Collaboration"</div>
+    <p style="font-size: 14px; line-height: 1.7; margin-bottom: 10px;">
+      GBrain is essentially a powerful set of tools for knowledge base construction and retrieval. If it is only <strong>manually run by humans</strong> in the command line (such as manually typing <code>gbrain search</code> / <code>gbrain query</code>), it is at best a local personal Wiki tool. Frequently switching and copying/pasting during coding creates a fragmented development experience.
+    </p>
+    <p style="font-size: 14px; line-height: 1.7; margin: 0;">
+      The secret to truly releasing GBrain's power lies in <strong>integrating it into an AI Agent (e.g., Codex or Claude Code)</strong>. By letting the AI handle execution, matching, reading, and writing in the background, GBrain is seamlessly integrated into your daily AI-assisted development workflow. At this point, GBrain becomes the AI's "external hard drive" and "experience cache" — AI searches for you, AI consolidates for you, and human-computer collaboration efficiency multiplies exponentially.
+    </p>
+  </div>
+
+  <div class="info info-tip" style="margin-bottom: 24px;">
+    <strong>Data Safety:</strong> By default, GBrain stores all data on the local hard drive, and basic features do not require internet access. Network requests are only made when semantic search is enabled (requires OpenAI Embedding configuration) or when using a remote database (Supabase).
+  </div>
+
+  <p>Once connected, this is the most valuable way GBrain works — <strong>before answering any questions, the AI Agent will search GBrain first</strong>, giving answers with the project context in hand:</p>
+
+  <div class="diagram">
+    <div class="diagram-box" style="border-color:var(--cyan);">
+      <div class="label">You Ask a Question</div>
+      <div class="value" style="color:var(--cyan);">"How do I optimize this API timeout?"</div>
+    </div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box" style="border-color:var(--accent);">
+      <div class="label">Brain-First Search</div>
+      <div class="value" style="color:var(--accent);">Search the brain for relevant notes first</div>
+    </div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box" style="border-color:var(--green);">
+      <div class="label">Answer with Context</div>
+      <div class="value" style="color:var(--green);">Notes + Code = More accurate answer</div>
+    </div>
+  </div>
+  <div class="diagram-label">AI Agent Brain-First Search Flow</div>
+
+  <h3>Core Operations and Common Commands</h3>
+  <p>Daily interaction with the AI Agent is very natural. You don't need to memorize complex CLI commands; just speak in natural language to Codex or Claude Code to manage GBrain automatically in the background:</p>
+
+  <table>
+    <tr><th>What you want to do</th><th>Say to your AI Agent (Prompt examples)</th><th>AI Agent execution & coordination</th></tr>
+    <tr>
+      <td><strong>Save notes</strong></td>
+      <td>"Record this: today I found that this module..." / "Help me record a pitfall guide"</td>
+      <td>Auto-trigger skill capture, write to GBrain and sync to <code>.gbrain-md/</code></td>
+    </tr>
+    <tr>
+      <td><strong>Search notes</strong></td>
+      <td>"Find content about ... in GBrain" / "Search for payment logic"</td>
+      <td>Auto-run <code>gbrain search</code> / <code>gbrain query</code></td>
+    </tr>
+    <tr>
+      <td><strong>Ask questions</strong></td>
+      <td>"What is the architecture and data flow of this project?"</td>
+      <td>Retrieve GBrain notes via semantic search + combine local code to reply</td>
+    </tr>
+    <tr>
+      <td><strong>Check project list</strong></td>
+      <td>"Check what local project brains exist" / "List all my local project brains"</td>
+      <td>Auto-run <code>gbrain sources list</code> to show sources and paths</td>
+    </tr>
+    <tr>
+      <td><strong>Deregister brain</strong></td>
+      <td>"Help me deregister and delete the dedicated brain for the current project"</td>
+      <td>Auto-unbind and run <code>gbrain sources remove</code></td>
+    </tr>
+  </table>
+
+  <div class="info info-experience" style="margin-top:12px; font-size:14px; line-height:1.75;">
+    <strong style="color: var(--accent);">Special Note:</strong> If you choose the <strong>Keyless Mode</strong> during GBrain installation, GBrain will lack fuzzy search capabilities. If the keywords chosen by the AI Agent are not precise enough, the search might miss and fail (e.g., if the AI Agent runs <code>gbrain search doubleclick</code>, it can only find documents containing exactly "doubleclick". If you wrote "double click" or "double-click" in GBrain, the search might miss, causing it to fail to fetch background data and fail to answer).<br>
+    <span style="font-size:13px; display:inline-block; margin-top:8px;"><strong>Tip:</strong> To understand why AI searches might disconnect and how GBrain uses ZeroEntropy for fuzzy understanding, please jump to the <a href="#gbrain-faq" style="color: var(--accent); text-decoration: underline; font-weight: bold;">FAQs</a> section at the bottom.</span>
+  </div>
+
+  <div class="card" style="border-color: var(--accent); margin-top: 12px; margin-bottom: 24px;">
+    <div class="card-title" style="color: var(--accent); font-weight: bold;">Core Collaborative Relationship: Four Roles in AI Agent Workflow</div>
+    <p style="font-size: 14px; margin-bottom: 12px;">In a knowledge-base-driven AI collaborative development process, technical concepts can easily get confused. Here is their clear division of labor and positioning in the workflow:</p>
+    
+    <table>
+      <tr>
+        <th style="width: 20%;">Tech Component</th>
+        <th style="width: 22%;">Role (Metaphor)</th>
+        <th style="width: 28%;">Core Function / Responsibility</th>
+        <th style="width: 30%;">Specific Action in Practice</th>
+      </tr>
+      <tr>
+        <td><strong>AI Agent</strong><br><span style="font-size: 11px; opacity: 0.8;">(e.g., Codex / Claude Code)</span></td>
+        <td><strong>Executive Officer (Agent Body & Toolset)</strong></td>
+        <td>Interacts with the user, reads your instructions, breaks them into tasks, and calls terminal tools (e.g., reading files, running tests, database I/O) to work automatically.</td>
+        <td>When you say <em>"check the principle of red dot double click"</em>, the AI Agent calls GBrain to query and consolidates the notes.</td>
+      </tr>
+      <tr>
+        <td><strong>GBrain</strong><br><span style="font-size: 11px; opacity: 0.8;">(Local Engine & DB)</span></td>
+        <td><strong>Local Archive Room (Knowledge Base)</strong></td>
+        <td>The <strong>local physical archive</strong> storing all tech notes, design docs, and architectural understandings. Provides local high-concurrency reading, writing, filtering, and DB storage.</td>
+        <td>Responsible for safely and privately persisting project Markdown notes (e.g., <code>.gbrain-md/</code>) to the local GBrain database in real-time.</td>
+      </tr>
+      <tr>
+        <td><strong>Vector Model</strong><br><span style="font-size: 11px; opacity: 0.8;">(e.g., ZeroEntropy / OpenAI embedding)</span></td>
+        <td><strong>Translator (Semantic Feature Extractor)</strong></td>
+        <td>Translates natural language documents and code in GBrain into "semantic fingerprints" (Embedding vectors) in a high-dimensional space, enabling concept-level similarity matching.</td>
+        <td>When the AI Agent wants to search across languages/concepts (e.g., matching Chinese "双击" with English "double click"), the vector model enables <b>fuzzy semantic search</b>.</td>
+      </tr>
+      <tr>
+        <td><strong>LLM Large Model</strong><br><span style="font-size: 11px; opacity: 0.8;">(e.g., Claude 3.5 Sonnet / Gemini Pro)</span></td>
+        <td><strong>Decision Brain (Reasoning Center)</strong></td>
+        <td>Provides logical analysis, code understanding, summarization, and text generation. Responsible for reasoning and consolidating retrieved information.</td>
+        <td>When GBrain retrieves relevant notes and code snippets, the LLM logically pieces them together, distills pitfalls, and generates the final high-value answer.</td>
+      </tr>
+    </table>
+    
+    <div class="info info-experience" style="margin-top: 12px; font-size: 13px;">
+      <strong>Collaboration Workflow in One Sentence:</strong><br>
+      You instruct the <strong>AI Agent</strong> to work ➡️ The <strong>AI Agent</strong> automatically requests documents from the <strong>GBrain Archive</strong> ➡️ The <strong>Vector Model</strong> helps GBrain perform fuzzy semantic matching to pull the most relevant notes ➡️ The <strong>LLM Large Model</strong> deeply reasons and synthesizes these notes to present the best distilled solution to you.
+    </div>
+  </div>
+
+  <h3>Practical Use Cases in Development</h3>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Fixed a Bug</div>
+      <pre style="font-size:12px">"Record: Resolved Lenovo Quick Menu double-click conflict"
+"Record: Memory leak due to uncleaned EventEmitter listeners"</pre>
+      <p style="font-size:13px;">Next time you encounter a similar issue, let the AI search GBrain to instantly recall how it was fixed before.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Made an Architectural Decision</div>
+      <pre style="font-size:12px">"Record: 2026-07-14 Switched the collaborative coding agent"
+"Record: Local brain source pointed to project directory .gbrain-md"</pre>
+      <p style="font-size:13px;">When new colleagues join months later, they don't need to ask why these choices were made.</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Starting a New Module</div>
+      <pre style="font-size:12px">"Check if a similar module was written in GBrain before"
+"Search for notes on physical data collection logic of the red dot"</pre>
+      <p style="font-size:13px;">See if there are existing design specs and implementation references.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Before Code Review & Refactoring</div>
+      <pre style="font-size:12px">"What pitfalls did this module have before?"
+"Search for known issues and troubleshooting guides"</pre>
+      <p style="font-size:13px;">Perform reviews and refactoring designs with complete historical experience, maximizing safety.</p>
+    </div>
+  </div>
+
+  <div class="card" style="border-color: var(--accent); margin-top: 24px; margin-bottom: 24px;">
+    <div class="card-title" style="color: var(--accent); font-weight: bold;">Real Search Q&A Demo (Taking TrackPointGame_Demo Project as Example)</div>
+    <p>Here is a real test record — after constructing the project brain, ask the AI directly to verify the retrieval effect:</p>
+
+    <div class="qa-block" style="margin: 12px 0;">
+      <div class="qa-q" style="background: rgba(255, 103, 0, 0.05); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 8px;">
+        <strong style="color: var(--accent);">User:</strong>
+        <code style="font-size: 13px;">Check your project brain. What was the cause of that deadlock bug in the serial worker in this project? How did we fix it?</code>
+      </div>
+      <div class="qa-a" style="background: rgba(22, 163, 74, 0.04); border-left: 3px solid var(--green); padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
+        <strong style="color: var(--green);">AI Agent:</strong>
+        <div style="font-size: 13px; margin-top: 6px; line-height: 1.6;">
+          <p style="margin: 0 0 4px 0;"><strong style="color: var(--green);">[Search Hit]</strong> Hit <code>projects/trackpoint-game/pitfalls</code>, score 0.90 (high_vector_match).</p>
+        </div>
+        <hr style="border: none; border-top: 1px solid rgba(22, 163, 74, 0.15); margin: 10px 0;">
+        <div style="font-size: 13px; line-height: 1.6;">
+          <p style="margin: 0 0 6px 0;"><strong>Deadlock Bug Analysis</strong></p>
+          <p style="margin: 0 0 4px 0;"><strong>Symptom</strong><br>Connect to serial port → Disconnect → Reconnect. The serial port seems to open but <strong>no data flows</strong>, and the game doesn't respond.</p>
+          <p style="margin: 0 0 4px 0;"><strong>Root Cause (v0.0.56)</strong><br>The code directly <strong>transferred</strong> <code>port.readable</code> to the Web Worker:</p>
+          <pre style="background: rgba(0,0,0,0.03); padding: 8px; border-radius: 4px; font-size: 12px; margin: 6px 0; overflow-x: auto;">// Wrong way in v0.0.56
+const readable = selectedPort.readable;
+worker.postMessage({ type: 'START_SERIAL', readable }, [readable]);</pre>
+          <p style="margin: 0 0 4px 0;">The second argument of <code>postMessage</code>, <code>[readable]</code>, transfers the readable stream to the Worker thread, causing the main thread to lose the lock on this stream forever. When <code>port.close()</code> is called, the main thread waits for the readable stream to be unlocked, while the Worker holds the lock → <strong>deadlock</strong>.</p>
+          <p style="margin: 0 0 4px 0;"><strong>Fix (v0.0.57)</strong><br>Introduce a <strong>TransformStream transit channel</strong> so the main thread retains control over the passthrough:</p>
+          <pre style="background: rgba(0,0,0,0.03); padding: 8px; border-radius: 4px; font-size: 12px; margin: 6px 0; overflow-x: auto;">// Correct way in v0.0.57
+const passthrough = new TransformStream&lt;Uint8Array, Uint8Array&gt;();
+serialPipeClosedRef.current = readable.pipeTo(passthrough.writable).catch(() =&gt; {});
+worker.postMessage(
+  { type: 'START_SERIAL', readable: passthrough.readable },
+  [passthrough.readable]
+);</pre>
+          <p style="margin: 0 0 4px 0;">Key changes:</p>
+          <ul style="margin: 0 0 4px 0; padding-left: 20px;">
+            <li>The main thread <strong>pipes</strong> <code>readable</code> to <code>passthrough.writable</code>, preserving the Promise of the pipe.</li>
+            <li>Only <code>passthrough.readable</code> is transferred to the Worker.</li>
+            <li>Await <code>serialPipeClosedRef.current</code> before closing to ensure the pipe is completely drained.</li>
+          </ul>
+          <p style="margin: 0 0 4px 0;"><strong>Lessons</strong><br><strong>Never transfer <code>port.readable</code> directly to a Worker.</strong> Use TransformStream as an intermediary to let the main thread retain lifecycle control. Wait for the pipe to drain before each close.</p>
+          <p style="margin: 0; color: var(--text-tertiary); font-size: 12px;">[Source: git commit <code>fba31c5</code>, <code>c93c977</code>]</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info info-experience" style="margin-top: 12px; margin-bottom: 0;">
+      <strong>Verification Conclusion:</strong> After the project brain is built, the AI uses <code>mcp__gbrain__search</code> to invoke GBrain semantic retrieval, hitting the <code>projects/trackpoint-game/pitfalls</code> page, returning <code>evidence: "high_vector_match"</code> (vector similarity 0.90). This indicates the vector model participated in the retrieval, and the knowledge has been successfully indexed and is searchable.
+    </div>
+  </div>
+
+  <h3>Key Installed Skills</h3>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">signal-detector (Only works after skill pack is installed)</div>
+      <p style="font-size:13px;">Runs automatically on every conversation to capture your original thoughts and entities mentioned (tech decisions, architecture designs, pitfalls, etc.) and save them in the brain in your original words.</p>
+      <div class="info info-experience" style="margin-top:6px; font-size:12px;">
+        <strong>Note:</strong> This skill only triggers after running <code>gbrain skillpack scaffold --all</code> to install it to <code>~/.claude/skills/</code>.<br>
+        Check installed skills with <code>gbrain skillpack check</code>.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">brain-ops</div>
+      <p style="font-size:13px;">Brain read/write standard: search the brain before calling any external APIs. Automatically maintain references and backlinks on every write.</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">capture / ingest</div>
+      <p style="font-size:13px;">Quickly ingest notes into the brain. Triggers on "capture this", "save this", "record this", etc.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">query / search</div>
+      <p style="font-size:13px;">Search knowledge in the brain. Supports keyword search and relationship retrieval. Results require embedding model configuration.</p>
+    </div>
+  </div>
+
+  <h3>Best Practices</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <p><strong>Every morning when opening the project, ask the brain first:</strong></p>
+      <pre>"What is the architecture of this project?"</pre>
+      <p>The AI will read architecture notes in the brain and key code files to quickly recall the project context.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <p><strong>Whenever you hit a pitfall, make a decision, or learn something new, say:</strong></p>
+      <pre>"Record: The performance bottleneck of this module was in DB queries, adding an index improved it 10x"</pre>
+      <p>The AI will automatically capture and save it to the brain. This process is fully automated after installing the signal-detector skill.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <p><strong>When new colleagues take over the project:</strong> Create a project brain. See the <a href="#gbrain-project" style="color: var(--accent); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--accent); padding-bottom: 1px;">Project Brain</a> section.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== FAQ ===================== -->
+<div class="section" id="gbrain-faq">
+  <div class="section-head">
+    <h2>FAQs</h2>
+  </div>
+
+  <details>
+    <summary>How do I resolve Git SSL connection reset errors during installation on Windows?</summary>
+    <div class="faq-content">
+      <p><strong>Symptom:</strong> <code>git clone</code> reports <code>schannel: SSL connection reset</code> or <code>Failed to receive handshake, SSL/TLS connection failed</code>.</p>
+      <p><strong>Reason:</strong> Windows' Schannel SSL backend fails to handshake with GitHub through local proxies (like 127.0.0.1:7897).</p>
+      <p><strong>Solution:</strong> Bypass proxy temporarily during clone: <code>git -c http.proxy="" clone https://github.com/garrytan/gbrain.git ~/gbrain --depth 1</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What should I do if Bun global install (bun install -g) crashes on Windows?</summary>
+    <div class="faq-content">
+      <p><strong>Symptom:</strong> <code>bun install -g github:garrytan/gbrain</code> crashes during tarball extraction or <code>gbrain doctor</code> reports schema_version as 0.</p>
+      <p><strong>Reason:</strong> Bun's support for global postinstall scripts on Windows is unstable, and schema migrations are not auto-executed.</p>
+      <p><strong>Solution:</strong> Use a deterministic installation path — clone the source code and build locally: <code>git clone ... && cd ~/gbrain && bun install && bun link</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Is my GBrain data safe? Will it leak to the internet?</summary>
+    <div class="faq-content">
+      <p>Basic features run completely locally. Currently using <strong>PGLite</strong> (embedded local Postgres). All data is stored in <code>~/.gbrain/brain.pglite</code> with no network requests.</p>
+      <ul>
+        <li>Network requests are only made during <code>git clone</code> and <code>bun install</code> (one-time).</li>
+        <li>When ZeroEntropy API Key is configured, data outbounds (text fragments only) occur during embedding model calls.</li>
+        <li>Without configuring a remote database (Supabase), data will not be uploaded to the cloud.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>Do I need an API key? Which provider should I use?</summary>
+    <div class="faq-content">
+      <p>Basic features (keyword search <code>gbrain search</code>, saving notes) do not require an API key.</p>
+      <p>To enable semantic search (<code>gbrain query</code>), GBrain uses ZeroEntropy's <code>zembed-1</code> embedding model (1280-dimension) and <code>zerank-2</code> reranking model by default. You need to configure the <code>ZEROENTROPY_API_KEY</code> environment variable.</p>
+      <p>You can also switch to OpenAI's embedding models, but currently, the ZeroEntropy solution is tested and works properly.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What is "Semantic Search"? What is its relationship with search.mode?</summary>
+    <div class="faq-content">
+      <p><strong>Semantic Search (API Key)</strong> determines whether fuzzy semantic matching is possible — searching for "trackpad" can find "TrackPoint" even if the keywords don't match exactly.</p>
+      <p><strong>search.mode</strong> determines how much context and token budget each search consumes, which is independent of whether you have an API key:</p>
+      <ul>
+        <li><strong>conservative</strong>: 4K tokens, 10 fragments, saves the most tokens.</li>
+        <li><strong>balanced</strong> (recommended): 12K tokens, 25 fragments, Sonnet-level cost-performance.</li>
+        <li><strong>tokenmax</strong>: no budget limit, 50 fragments, most comprehensive.</li>
+      </ul>
+      <p>The two concepts are orthogonal. You can change search.mode without an API key, and select conservative even with an API key.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Since notes are stored in the database, how do I view them in a text editor?</summary>
+    <div class="faq-content">
+      <p>The GBrain database (PGLite) is binary and cannot be opened directly in an editor. However, our prompt requires <strong>Write-Through</strong> — creating a brain page will also write a <code>.md</code> file to <code>~/brain/projects/&lt;project_name&gt;/</code> and commit it to Git.</p>
+      <p>So you can:</p>
+      <ul>
+        <li><strong>Search knowledge</strong>: Say "search for project XXX" to the AI ➡️ AI queries the database.</li>
+        <li><strong>View raw notes</strong>: Directly open <code>~/brain/projects/&lt;project_name&gt;/*.md</code> ➡️ Text editor.</li>
+      </ul>
+      <p>If a note exists only in the database but not in the repo, run <code>gbrain sync --push</code> to sync it back to the repo.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How are multiple projects isolated?</summary>
+    <div class="faq-content">
+      <p>Currently using a <strong>Single-Brain Topology (Topology 1)</strong> — all projects share the same PGLite database, isolated by namespace:</p>
+      <ul>
+        <li>Project A knowledge ➡️ <code>projects/project-a/*</code></li>
+        <li>Project B knowledge ➡️ <code>projects/project-b/*</code></li>
+      </ul>
+      <p>If you want completely independent database instances, use the <strong>Split-Engine Topology (Topology 3)</strong>: create independent PGLite instances for each project using the <code>GBRAIN_HOME</code> environment variable.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can data in the brain be exported?</summary>
+    <div class="faq-content">
+      <p>Yes. There are two ways:</p>
+      <ul>
+        <li><strong>Via repository</strong>: <code>~/brain/</code> itself is a Git repository, and all <code>.md</code> files can be copied, committed, and shared directly.</li>
+        <li><strong>Via commands</strong>: <code>gbrain get &lt;slug&gt;</code> prints the full Markdown, which can be redirected to a file.</li>
+        <li><strong>Via MCP</strong>: Use <code>list_pages</code> to list all pages + <code>get_page</code> to read them one by one.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>What should I do if gbrain doctor errors on Windows?</summary>
+    <div class="faq-content">
+      <p><strong>Symptom:</strong> <code>gbrain doctor --json</code> output is empty, or reports a PGLite lock timeout.</p>
+      <p><strong>Reason:</strong> Bun's handling of large JSON outputs on Windows is unstable, and PGLite is occupied during MCP connection.</p>
+      <p><strong>Solution:</strong></p>
+      <ul>
+        <li>Fetch the full health report by calling the <code>run_doctor</code> tool via MCP.</li>
+        <li>Or disconnect MCP and run <code>gbrain doctor</code> separately in a terminal.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>How do I upgrade GBrain?</summary>
+    <div class="faq-content">
+      <p>For Git clone installations, run: </p>
+      <pre>cd ~/gbrain && git pull origin master && bun install
+gbrain apply-migrations --yes
+gbrain post-upgrade</pre>
+      <p>Then run <code>gbrain doctor</code> (or <code>run_doctor</code> via MCP) to verify the health status.</p>
+      <p>If installed via <code>bun install -g</code>, the upgrade command is <code>gbrain upgrade</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How do I reuse the project brain on other projects?</summary>
+    <div class="faq-content">
+      <p>You only need to copy the prompt. Send the optimized prompt from the "Project Brain" section to the AI Agent in the new project. The AI will automatically:</p>
+      <ol>
+        <li>Scan the code structure and Git history of the new project.</li>
+        <li>Create <code>projects/&lt;new_project_name&gt;/*</code> pages in GBrain.</li>
+        <li>Sync <code>.md</code> files to <code>~/brain/projects/&lt;new_project_name&gt;/</code>.</li>
+        <li>Verify retrieval effects.</li>
+      </ol>
+      <p>No need to reinstall GBrain or reconfigure MCP.</p>
+    </div>
+  </details>
+</div>
+
+<!-- ===================== CHEAT SHEET ===================== -->
+<div class="section" id="gbrain-cheatsheet">
+  <div class="section-head">
+    <h2>Cheatsheet</h2>
+  </div>
+
+  <table>
+    <tr><th>Scenario</th><th>Common Command / Talk to AI Agent</th><th>Notes</th></tr>
+    <tr><td>Verify installation</td><td><code>gbrain --version</code></td><td>Outputs the version number normally.</td></tr>
+    <tr><td>Install GBrain</td><td>See prompt in Section 2, send to AI Agent to install automatically</td><td>Prefer offline ZIP installation on Windows.</td></tr>
+    <tr><td>Create project brain</td><td><code>Use the optimized prompt in the "Project Brain" section (contains Write-Through and Markdown export requirements)</code></td><td>AI automatically analyzes the project, creates pages, writes <code>.md</code> files to <code>~/brain/projects/</code>, and commits to Git.</td></tr>
+    <tr><td>List all project brains</td><td><code>gbrain sources list</code></td><td>Lists all registered data sources, page counts, and bound local write-through paths.</td></tr>
+    <tr><td>Read a specific note</td><td><code>gbrain get &lt;slug&gt; --source &lt;id&gt;</code></td><td>Fetch content directly from a specific project brain source.</td></tr>
+    <tr><td>Import external notes</td><td><code>gbrain import .gbrain-md --source-id &lt;id&gt; --no-embed</code></td><td>Import local modifications back into the database.</td></tr>
+    <tr><td>Keyword search</td><td><code>gbrain search &lt;keyword&gt;</code></td><td><strong>Fully offline and keyless, direct access.</strong></td></tr>
+    <tr><td>Hybrid semantic search</td><td><code>gbrain query &lt;question&gt;</code></td><td>Combines vector models, requires API key configuration.</td></tr>
+    <tr><td>Health check & repair</td><td><code>gbrain doctor</code></td><td>Checks pgvector, skill packs, and schema parities.</td></tr>
+    <tr><td>Delete project source</td><td><code>gbrain sources remove &lt;id&gt;</code></td><td>Deregister and remove project source data from the database.</td></tr>
+  </table>
+</div>
+
+</div>
+
+    <div class="footer">
+      <p>GBrain Team Knowledge Base — Quickstart Guide</p>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+<div id="graphify-container" style="display: none;">
+  
+
+<div class="layout-container">
+  <nav class="nav">
+    <div class="nav-logo">
+      <div class="docs-switcher" data-active="graphify">
+        <div class="switcher-slider" style="transform: translateX(calc(100% + 2px));"></div>
+        <button class="switcher-btn" onclick="window.switchDocument('gbrain')">
+          <svg class="switcher-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+          <span>GBrain</span>
+        </button>
+        <button class="switcher-btn active" onclick="window.switchDocument('graphify')">
+          <svg class="switcher-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>Graphify</span>
+        </button>
+      </div>
+    </div>
+    <div class="nav-inner">
+      <div class="nav-item-group">
+        <a href="#graphify-intro" class="nav-parent">Overview</a>
+        <div class="nav-sub">
+          <a href="#graphify-intro" class="sub-nav-item">What is Graphify</a>
+          <a href="#graphify-comparison" class="sub-nav-item">Differences from GBrain</a>
+          <a href="#graphify-agent-integration" class="sub-nav-item">Work with AI Agent</a>
+        </div>
+      </div>
+      <a href="#graphify-quickstart">Quickstart</a>
+      <div class="nav-item-group">
+        <a href="#graphify-project" class="nav-parent">Project Graph</a>
+        <div class="nav-sub">
+          <a href="#graphify-project" class="sub-nav-item">Create Project Graph</a>
+          <a href="#graphify-project-demo" class="sub-nav-item">Real-world Case</a>
+        </div>
+      </div>
+      <a href="#graphify-team">Team Collaboration</a>
+      <a href="#graphify-faq">FAQs</a>
+      <a href="#graphify-cheatsheet">Cheatsheet</a>
+    </div>
+    <div class="nav-footer">
+      Author: WeilinZhang<br>
+      <span style="opacity:.8;">19523330249@163.com</span>
+    </div>
+  </nav>
+
+  <div class="main-wrapper">
+    <div class="hero">
+      <div class="hero-badge">Quickstart Guide — Graphify</div>
+      <div style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 10px;">Author: WeilinZhang (19523330249@163.com)</div>
+      <h1>Graphify Project Knowledge Graph</h1>
+      <div class="hero-meta">
+        Official Repo: <a href="https://github.com/Graphify-Labs/graphify" target="_blank">github.com/Graphify-Labs/graphify</a>
+        <span style="margin:0 10px;color:var(--border);">|</span>
+        Official PyPI Package: <strong>graphifyy</strong> (Command remains <code>graphify</code>)
+      </div>
+      <p>Let AI connect code, documents, PDFs, images, and architectural specifications into a searchable, traceable project map.</p>
+    </div>
+
+    <div class="content">
+
+<!-- ===================== INTRO ===================== -->
+<div class="section" id="graphify-intro-section">
+  <div class="section-head"><h2>What is Graphify? In simple words</h2></div>
+
+  <p><strong>Graphify = Turns code and document relationships in the current project into a persistent knowledge graph.</strong></p>
+  <p>It parses functions, classes, calls, imports, inheritance, and dependency relationships through AST, and then connects concepts, design rationale, and implementation code in non-code assets like Markdown, PDFs, and images. Once constructed, the AI doesn't need to traverse the entire repository from scratch every time; it can query the graph first and then locate the source files by evidence.</p>
+
+  <div class="mini-flow">
+    <div class="flow-cell"><div class="flow-kicker">Input</div><div class="flow-value">Code + Docs + Images</div></div>
+    <div class="flow-cell"><div class="flow-kicker">Extract</div><div class="flow-value">AST + Semantic Concepts</div></div>
+    <div class="flow-cell"><div class="flow-kicker">Organize</div><div class="flow-value">Nodes + Edges + Communities</div></div>
+    <div class="flow-cell"><div class="flow-kicker">Use</div><div class="flow-value">Query / Path / Explain</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">What will you get after building?</div>
+    <table>
+      <tr><th>Artifact</th><th>Purpose</th></tr>
+      <tr><td><code>graphify-out/graph.html</code></td><td>An interactive graph in the browser to search nodes, view communities, and connections.</td></tr>
+      <tr><td><code>graphify-out/GRAPH_REPORT.md</code></td><td>An architectural summary for humans and Agents: core nodes, communities, unexpected connections, and suggested questions.</td></tr>
+      <tr><td><code>graphify-out/graph.json</code></td><td>Complete, persistent graph data for CLI, Skills, MCP, and other GraphRAG tools to query.</td></tr>
+      <tr><td><code>graphify-out/cache/</code></td><td>Incremental build cache; subsequent <code>--update</code> only processes new or changed files.</td></tr>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Especially suitable for</div>
+      <ul>
+        <li>Quickly understanding module boundaries and core data flows in a strange codebase.</li>
+        <li>Querying the relationships between a class, function, or configuration and other components.</li>
+        <li>Connecting protocol specifications, architecture documents, and screenshots with implementation code.</li>
+        <li>Evaluating which communities and dependencies a PR, modification, or refactoring might affect.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Do not misunderstand as</div>
+      <ul>
+        <li>Not a long-term memory database that automatically records all conversations.</li>
+        <li>Not a vector database, nor a pure keyword index.</li>
+        <li>Will not naturally understand all pitfall lessons from Git history.</li>
+        <li>Cannot replace source code, tests, Git evidence, and manual reviews.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>How to distinguish "Facts" and "Inferences" in the graph?</h3>
+  <p>Graphify tags relationships with evidence levels. You should prioritize relationships extracted directly from source materials, and review inferred relationships against the source code:</p>
+  <table>
+    <tr><th>Tag</th><th>Meaning</th><th>Usage Advice</th></tr>
+    <tr><td><span class="tag">EXTRACTED</span></td><td>The relationship exists directly in the source code, documents, or explicit references.</td><td>Highly credible clues, but you should still check source files before making important changes.</td></tr>
+    <tr><td><span class="tag">INFERRED</span></td><td>Relationships deduced by Graphify based on naming, parsing, and context.</td><td>Suitable for discovering hidden connections, not to be taken as direct proof of developer intent.</td></tr>
+    <tr><td><span class="tag">AMBIGUOUS</span></td><td>Multiple possible matches exist and cannot be uniquely determined.</td><td>Must be resolved manually by combining file paths, symbol definitions, call sites, and tests.</td></tr>
+  </table>
+</div>
+
+<!-- ===================== COMPARISON ===================== -->
+<div class="section" id="graphify-comparison">
+  <div class="section-head"><h2>Graphify & GBrain: Complementary, Not Substitutes</h2></div>
+
+  <div class="info info-tip">
+    <strong>Core Difference:</strong> GBrain is like a "long-term knowledge archive", while Graphify is like a "current project structure map". The former excels in saving experience and notes, while the latter excels in showing relationships between code, documents, and components.
+  </div>
+
+  <table>
+    <tr><th>Dimension</th><th>Graphify</th><th>GBrain</th></tr>
+    <tr><td>Core Data Structure</td><td>Knowledge graph of nodes, edges, and communities</td><td>Searchable and writable knowledge pages and notes</td></tr>
+    <tr><td>Primary Sources</td><td>Workspace code, documents, images, PDFs, configurations</td><td>Long-term experiences, decisions, meetings, and pages distilled by humans or Agents</td></tr>
+    <tr><td>Strongest Capability</td><td>Module relationships, call paths, dependencies, architectural navigation, impact area</td><td>Experience reuse, historical lessons, decision backgrounds, long-term cross-project memory</td></tr>
+    <tr><td>Update Method</td><td>Rebuild graph or run <code>--update</code> for incremental refresh</td><td>Continuously add or update knowledge pages</td></tr>
+    <tr><td>Query Method</td><td><code>query</code>, <code>path</code>, <code>explain</code>, and MCP graph tools</td><td>Keyword, semantic search, page reading and writing</td></tr>
+  </table>
+
+  <div class="compare-grid">
+    <div class="card">
+      <div class="card-title">With Graphify Only</div>
+      <p>You get a high-quality project structure map, suitable for current codebase understanding, relationship query, and impact analysis; but historical bug lessons will not appear out of nowhere unless they are already written in code comments, docs, commit messages, or Markdown distilled by Agents.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">With Graphify + GBrain</div>
+      <p>Graphify provides "what the project looks like now", and GBrain saves "why it was done this way and what pitfalls were encountered in the past". The Agent can query long-term experiences first, and then use the graph map to locate current implementations and impact paths.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AGENT INTEGRATION ===================== -->
+<div class="section" id="graphify-agent-integration">
+  <div class="section-head"><h2>Work with AI Agent</h2></div>
+  <p>After generating a valid graph in the current workspace, add the Graphify MCP Server to the Agent configuration and establish Graph-First rules in the project to significantly improve the precision of AI-assisted development.</p>
+
+  <div class="diagram" style="justify-content:flex-start;">
+    <div class="diagram-box"><div class="label">User Task</div><div class="value">Propose development or debugging requirements</div></div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box" style="border-color:var(--accent);"><div class="label">Graph-First</div><div class="value" style="color:var(--accent);">Call Graphify MCP first</div></div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box"><div class="label">Graph Location</div><div class="value">Modules / Nodes / Calls / Impact Path</div></div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box"><div class="label">Source Review</div><div class="value">Read key files precisely</div></div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box"><div class="label">Precise Search</div><div class="value">Grep strings if necessary</div></div>
+    <div class="diagram-arrow">→</div>
+    <div class="diagram-box" style="border-color:var(--green);"><div class="label">Close Loop</div><div class="value" style="color:var(--green);">Modify / Test / Update Graph</div></div>
+  </div>
+  <div class="diagram-label">Graphify MCP-First Development Workflow</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">MCP: Provides Structured Graph Queries</div>
+      <p>Use tools like <code>query_graph</code>, <code>get_node</code>, <code>get_neighbors</code>, and <code>shortest_path</code> to quickly locate modules, symbols, dependencies, call chains, and potential impact areas.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Agent Rule: Decides When to Query Actively</div>
+      <p>Installing MCP only means the Agent "can call it", but doesn't guarantee it "prioritizes it". Project-level <code>CLAUDE.md</code> / <code>AGENTS.md</code> rules are responsible for establishing stable Graph-First behaviors.</p>
+    </div>
+  </div>
+
+  <h3>Core Principles the Agent Should Follow After Integration</h3>
+  <table>
+    <tr><th>Phase</th><th>Priority Action</th><th>Purpose</th></tr>
+    <tr><td>Understand Task</td><td>Call <code>query_graph</code> first</td><td>Get a local subgraph related to the issue, avoiding aimless traversal of the repo.</td></tr>
+    <tr><td>Focus on Symbols</td><td><code>get_node</code> + <code>get_neighbors</code></td><td>Confirm definition, direct dependencies, callers, callees, and the community it belongs to.</td></tr>
+    <tr><td>Analyze Chain</td><td><code>shortest_path</code></td><td>Trace cross-module connections, runtime paths, and potential impact propagation.</td></tr>
+    <tr><td>Verify Implementation</td><td>Read source code and tests precisely</td><td>Use actual code as the final source of truth to check inferences and ambiguities in the graph.</td></tr>
+    <tr><td>Complementary Search</td><td>Use grep when necessary</td><td>Find precise literals, error text, config keys, or new code that has not been indexed yet.</td></tr>
+    <tr><td>Close Loop</td><td>Modify, test, and incrementally update graph</td><td>Ensure subsequent MCP queries reflect the current code state.</td></tr>
+  </table>
+
+  <h3>Common MCP Tools</h3>
+  <table>
+    <tr><th>Tool</th><th>Purpose</th></tr>
+    <tr><td><code>query_graph</code></td><td>Returns a local subgraph relevant to a natural language question.</td></tr>
+    <tr><td><code>get_node</code></td><td>Reads source, community, relationships, and metadata of a specific node.</td></tr>
+    <tr><td><code>get_neighbors</code></td><td>View components directly connected to a node and the relationship types.</td></tr>
+    <tr><td><code>shortest_path</code></td><td>Trace the shortest graph path between two concepts.</td></tr>
+    <tr><td><code>list_prs</code> / <code>get_pr_impact</code></td><td>View PR status and analyze impact areas combined with graph communities.</td></tr>
+    <tr><td><code>triage_prs</code></td><td>Assist in sorting the review queue when supported models are configured.</td></tr>
+  </table>
+
+  <div class="info info-tip"><strong>Key Concept:</strong> Graphify is not meant to replace grep entirely. The graph is responsible for building structural understanding and narrowing the scope first; source code reading, tests, and precise text search are responsible for final confirmation. The ideal flow is "Graphify locates, source code proves, grep complements".</div>
+
+  <div class="info info-warn">
+    <strong>Platform Command Differences:</strong> Most Agents use <code>/graphify</code>, while Codex currently uses <code>$graphify</code>. When running the CLI directly in PowerShell, use <code>graphify .</code>, do not input slash commands like <code>/graphify .</code>.
+  </div>
+</div>
+
+<!-- ===================== QUICK START ===================== -->
+<div class="section" id="graphify-quickstart">
+  <div class="section-head"><h2>Quickstart: One-Shot Automatic Setup for Graphify + GBrain</h2></div>
+  <p>Copy and send the <strong>Unified One-Shot prompt</strong> below to your AI Agent to complete Graphify CLI, Chinese segmentation, stdio MCP, and Agent Skill setup in one go:</p>
+
+  <div class="prompt-box" style="margin: 20px 0; border-left: 4px solid var(--accent); background: rgba(16, 185, 129, 0.05); padding: 16px;">
+    <p class="prompt-label" style="font-weight: bold; color: var(--accent); margin-bottom: 8px;">Send to your AI Agent (Codex / Claude Code / Antigravity)</p>
+    <pre style="font-size: 14px; line-height: 1.6; font-family: monospace; white-space: pre-wrap; margin: 0;">I want to install GBrain and Graphify. Read the repository https://github.com/Jeffrey1799/gbrain-graphify-bundle and follow the instructions.</pre>
+  </div>
+
+  <div class="info info-experience" style="margin-top: 16px;">
+    <strong>Post-One-Shot Next Steps:</strong>
+    <ol style="margin: 8px 0 0 20px; padding: 0; line-height: 1.8;">
+      <li><strong>Step 1: One-Shot Auto-Setup</strong> — The Agent handles environment probes, dependency self-healing (Python 3.10+/Bun), and stdio MCP configuration. Mirrors are used only when explicitly requested.</li>
+      <li><strong>Step 2: Restart Agent Session</strong> — Once completed, <strong>RESTART your Agent session</strong> (or start a new chat) so the Graphify & GBrain MCP tools take effect.</li>
+      <li><strong>Step 3: Build BOTH GBrain Project Brain & Graphify Code Graph</strong> — Open your project workspace and send this prompt to generate <code>graphify-out/graph.json</code>, distill <code>~/brain/projects/&lt;project-slug&gt;/</code> brain cards, run <code>gbrain sync</code>, and inject agent rules:
+        <pre style="margin: 8px 0; padding: 8px 12px; font-size: 13px; background: rgba(0,0,0,0.03); border-radius: 4px; white-space: pre-wrap;">/project-knowledge-bootstrap Build a project knowledge brain and code graph for this workspace by reading https://github.com/Jeffrey1799/gbrain-graphify-bundle and following the project-knowledge-bootstrap instructions.</pre>
+      </li>
+    </ol>
+  </div>
+
+  <div class="info info-tip" style="margin-top: 16px;"><strong>Verification:</strong> Once Step 3 completes, test the graph via CLI queries (e.g. <code>graphify query "drag"</code>) or directly through MCP tool calls.</div>
+
+  <details>
+    <summary>Recovery commands for Graphify setup</summary>
+    <div class="faq-content">
+      <p>Do not register a second project-specific MCP server. Rerun the root bootstrap for the selected supported host, restart the Agent, then use <code>/project-knowledge-bootstrap</code> to create or refresh <code>graphify-out/graph.json</code>.</p>
+      <pre>.\bootstrap.ps1 -Agent codex
+bash ./bootstrap.sh --agent codex</pre>
+      <p>Independent <code>codebuddy.so</code> is outside this bundle's supported scope. Use the host-specific official documentation if its schema changes.</p>
+    </div>
+  </details>
+</div>
+
+<!-- ===================== PROJECT GRAPH ===================== -->
+<div class="section" id="graphify-project">
+  <div class="section-head"><h2>Project Graph: Graphing the Codebase</h2></div>
+  <p>Building the project graph allows Graphify to analyze codebase dependencies, structure, and semantic files. Refer to Step 2 of the Quickstart section to invoke the graph generation prompt.</p>
+
+  <div class="card">
+    <div class="card-title">Core CLI Commands for Construction</div>
+    <p style="margin-bottom: 8px;"><strong>1. Parse and extract workspace to build a graph (supports update)</strong></p>
+    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:8px;">Standard local extraction mode. Extracts AST structure locally, handles non-code assets according to constraints, and outputs the graph files to <code>graphify-out/</code>:</p>
+    <pre style="margin-bottom: 16px;">graphify extract .</pre>
+
+    <p style="margin-bottom: 8px;"><strong>2. Incremental update (recommended after code changes)</strong></p>
+    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:8px;">Only scans files changed since the last extraction, updating node/edge attributes and community boundaries in <code>graph.json</code>. Much faster than a full rebuild:</p>
+    <pre style="margin-bottom: 16px;">graphify extract . --update</pre>
+
+    <p style="margin-bottom: 8px;"><strong>3. Force full rebuild</strong></p>
+    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:8px;">Clears cache and rebuilds the entire graph from scratch. Use this when schema structures change or graph files are corrupted:</p>
+    <pre style="margin-bottom: 0;">graphify extract . --force</pre>
+  </div>
+</div>
+
+<div class="section" id="graphify-project-demo">
+  <div class="section-head"><h2>Real-world Case: Querying the Graph</h2></div>
+  <p>Here is a record showing how the AI Agent uses Graphify MCP to analyze modules after the graph has been generated:</p>
+
+  <div class="qa-block" style="margin: 12px 0;">
+    <div class="qa-q" style="background: rgba(255,103,0,0.05); border-left: 3px solid var(--accent); padding:10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 8px;">
+      <strong style="color:var(--accent);">User:</strong>
+      <code style="font-size:13px;">Find out which modules in the codebase depend on the serial communication module, and analyze the potential impact if I modify it.</code>
+    </div>
+    <div class="qa-a" style="background: rgba(22,163,74,0.04); border-left: 3px solid var(--green); padding:10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
+      <strong style="color:var(--green);">AI Agent (Claude 3.5 Sonnet):</strong>
+      <div style="font-size:13px; margin-top:6px; line-height:1.6;">
+        <p style="margin:0 0 4px 0;"><strong style="color:var(--green);">[Calling tool]</strong> Called <code>mcp__graphify__get_neighbors</code> for node <code>SerialManager</code>.</p>
+        <p style="margin:0 0 4px 0;"><strong style="color:var(--green);">[Calling tool]</strong> Called <code>mcp__graphify__get_node</code> to check community attributes of connected nodes.</p>
+      </div>
+      <hr style="border:none; border-top:1px solid rgba(22,163,74,0.15); margin:10px 0;">
+      <div style="font-size:13px; line-height:1.6;">
+        <p style="margin:0 0-6px 0;"><strong>Serial Manager Dependency and Impact Analysis</strong></p>
+        <p style="margin:0 0 4px 0;">According to the Graphify project graph, <code>SerialManager</code> is located in the <strong>"Hardware I/O Gateway"</strong> community (Community 2). The following modules depend directly on it:</p>
+        <ul>
+          <li><code>TrackPointController</code> (Community 2, Hardware I/O): Direct caller, depends on serial connection for sampling coordinates. <span class="tag">EXTRACTED</span></li>
+          <li><code>GameEngine</code> (Community 1, Core Game Loop): Indirectly depends on coord inputs via event listeners. <span class="tag">INFERRED</span></li>
+          <li><code>ConfigSyncService</code> (Community 5, Settings): Imports types from SerialManager to sync port baud rates. <span class="tag">EXTRACTED</span></li>
+        </ul>
+        <p style="margin:0 0 4px 0;"><strong>Refactoring Impact Assessment</strong></p>
+        <p style="margin:0 0 4px 0;">If you modify the return signature of <code>SerialManager.readData()</code>, the change will directly propagate to <code>TrackPointController.onReceive()</code>. Since <code>ConfigSyncService</code> only references typing definitions, it is safe as long as configuration schemas are backward compatible. Reviewing Community 2 dependencies is highly recommended before modifying the serial code.</p>
+        <p style="margin:0; color:var(--text-tertiary); font-size:12px;">[Source: graphify-out/graph.json]</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TEAM ===================== -->
+<div class="section" id="graphify-team">
+  <div class="section-head"><h2>Team Collaboration: Graph Versioning Decisions</h2></div>
+  <p>Should the generated <code>graphify-out/graph.json</code> and reports be submitted to Git? It depends on your team's workflow:</p>
+
+  <table>
+    <tr><th>Option</th><th>Advantages</th><th>Considerations</th></tr>
+    <tr><td>Commit to Git</td><td>Everyone shares the same project map; new members do not need to construct the graph from scratch on onboarding.</td><td>Requires agreement on update responsibilities, conflict resolution, and reviewing sensitive information.</td></tr>
+    <tr><td>Generate Locally Only</td><td>Lighter repository; avoids pushing build artifacts and internal paths to remote repos.</td><td>Every member needs to build the graph individually; graph versions might drift.</td></tr>
+  </table>
+
+  <div class="info info-tip"><strong>Recommendation:</strong> Run a trial run in the internal repository first. Review if <code>graph.json</code>, reports, and paths contain data that should not be shared before deciding whether to include them in version control.</div>
+</div>
+
+<!-- ===================== FAQ ===================== -->
+<div class="section" id="graphify-faq">
+  <div class="section-head"><h2>FAQs</h2></div>
+
+  <details>
+    <summary>Should I install graphify or graphifyy?</summary>
+    <div class="faq-content">
+      <p>The official PyPI package name is <code>graphifyy</code> (with double y). Once installed, the CLI command is still <code>graphify</code>, and the MCP command is <code>graphify-mcp</code>. Do not install other PyPI packages with similar names.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does codebase analysis require an API Key?</summary>
+    <div class="faq-content">
+      <p>Code AST extraction runs completely locally and does not require an API Key. Semantic extraction of documents, PDFs, and images uses the model of the current AI Agent, or the model backend configured in headless CLI mode. Confirm data egress rules when dealing with confidential materials.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Why can't I find the graphify command after installation?</summary>
+    <div class="faq-content">
+      <p>The executable directory of <code>uv tool</code> might not be added to your current shell's PATH. Run <code>uv tool update-shell</code> and reopen the terminal. In the current session, you can also verify using the absolute executable path found by the Agent.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Why does /graphify . error in Windows PowerShell?</summary>
+    <div class="faq-content">
+      <p><code>/graphify</code> is a Skill command within the AI Agent, not a PowerShell command. In PowerShell, run the CLI directly using <code>graphify .</code>. In Codex, use <code>$graphify .</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What is the difference between MCP and the Graphify Skill?</summary>
+    <div class="faq-content">
+      <p>The Skill is responsible for reading the workspace, scheduling extraction, and generating/updating the graph. The MCP loads an existing <code>graph.json</code> to provide structured query tools for the Agent. Typically, you install the Skill and generate the graph first, and then configure the MCP. MCP is not a prerequisite for graph generation.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What if jieba installation fails for Chinese word segmentation?</summary>
+    <div class="faq-content">
+      <p>When installing <code>graphifyy[mcp,chinese]==0.9.30</code> on Windows via <code>uv tool install</code>, jieba might fail because the uv sandbox cannot delete cache files or due to mirror hash mismatches.</p>
+      <p><strong>Solution:</strong> Download and build the wheel for jieba from PyPI using pip first, and then inject it via <code>uv tool install --with &lt;wheel_path&gt;</code>. Steps:</p>
+      <pre style="background: rgba(0,0,0,0.03); padding: 8px; border-radius: 4px; font-size: 12px; margin: 6px 0; overflow-x: auto;">pip install jieba --index-url https://pypi.org/simple --trusted-host pypi.org --trusted-host files.pythonhosted.org
+# Find the wheel path in pip cache
+ls /c/Users/xxx/AppData/Local/pip/cache/wheels/*/*/*/jieba-*.whl
+# Install with uv tool install --with specifying local wheel
+uv tool install --force "graphifyy[mcp,chinese]==0.9.30" --with /path/to/jieba-0.42.1-py3-none-any.whl</pre>
+      <p>You can also temporarily omit the <code>chinese</code> extra and add it later using the method above.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Path parameters error in Windows Git Bash?</summary>
+    <div class="faq-content">
+      <p>When passing absolute paths (like <code>/c/Users/xxx/project</code>) to commands like <code>graphify extract</code> in Git Bash, the path might be incorrectly joined as <code>C:\c\Users\...</code>.</p>
+      <p><strong>Solution:</strong> Switch to the target directory and use <code>.</code> as the path parameter directly, or use complete Windows path format (containing double backslashes) wrapped in quotes.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The Agent still cannot find graphify-mcp after MCP configuration?</summary>
+    <div class="faq-content">
+      <p>After modifying <code>mcp.json</code> to add the Graphify MCP server, the current AI Agent session will not reload the new MCP server automatically. <strong>You must restart the Agent session</strong> to make the <code>mcp__graphify__*</code> tools visible in the tool list. This is a platform limitation, not a configuration error.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Running the install command fails due to Windows sandbox issues?</summary>
+    <div class="faq-content">
+      <p>Re-running a Graphify platform integration command on Windows might fail with <code>SAFE_DELETE_FAIL_CLOSED</code> because the sandbox cannot delete the old skill references directory.</p>
+      <p>If the skill files already exist and work properly, this error can be safely ignored. For a clean reinstall, confirm and remove the Graphify skill directory for the current platform, then rerun its official install command.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it support PPTX?</summary>
+    <div class="faq-content">
+      <p>The current official file support matrix lists DOCX, XLSX, PDF, images, and Google Slides shortcuts, but not local PPTX extraction directly. It is recommended to let the Agent convert PPTX to PDF or structured Markdown first, and then ingest it via Graphify.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What if Chinese query results are not satisfying?</summary>
+    <div class="faq-content">
+      <p>Install <code>graphifyy[mcp,chinese]==0.9.30</code> to enable the MCP server and jieba Chinese word segmentation; meanwhile, try to include actual class names, function names, module names, or protocol names in your queries. Always verify graph queries against the source files.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How do I update Graphify?</summary>
+    <div class="faq-content">
+      <p>The safest way is to run the "Installation Prompt" in this guide again, letting the Agent use <code>uv tool install --force</code> to update the same set of extras from official docs. Re-register the Skill after upgrading, and run <code>graphify hook install</code> again to refresh the interpreter path embedded in the Hook.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How do I uninstall?</summary>
+    <div class="faq-content">
+      <p><code>graphify uninstall</code> removes platform integrations; adding <code>--purge</code> will also delete <code>graphify-out/</code>. Ensure the graph is backed up or committed before executing purge.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What if the graph becomes outdated or queries are inaccurate?</summary>
+    <div class="faq-content">
+      <p>Run <code>--update</code> first, and then repeat your query/path. Consider a full rebuild only if node IDs or schemas are incompatible with newer versions, graph files are corrupted, or a large number of file rules change. Never assume codebase queries are correct just because the command ran successfully.</p>
+    </div>
+  </details>
+</div>
+
+<!-- ===================== CHEAT SHEET ===================== -->
+<div class="section" id="graphify-cheatsheet">
+  <div class="section-head"><h2>Cheatsheet</h2></div>
+  <table>
+    <tr><th>Scenario</th><th>Command / Talk to Agent</th><th>Notes</th></tr>
+    <tr><td>Check version</td><td><code>graphify --version</code></td><td>Confirms the executable comes from the official <code>graphifyy</code> environment.</td></tr>
+    <tr><td>Quickstart</td><td>Use Step 1 Prompt in Quickstart section</td><td>Recommended extras: <code>mcp,chinese,pdf,office,watch</code>.</td></tr>
+    <tr><td>First graph build</td><td><code>/graphify .</code>; Codex: <code>$graphify .</code></td><td>PowerShell direct CLI: <code>graphify .</code>.</td></tr>
+    <tr><td>Incremental update</td><td><code>/graphify . --update</code></td><td>Run after code or document modifications.</td></tr>
+    <tr><td>Overall architecture</td><td><code>graphify query "show the core runtime flow"</code></td><td>Narrow down the scope first, then read key source code.</td></tr>
+    <tr><td>Explain node</td><td><code>graphify explain "SymbolName"</code></td><td>View source, community, connections, and evidence tags.</td></tr>
+    <tr><td>Trace path</td><td><code>graphify path "A" "B"</code></td><td>Used for data flow, dependency, and impact chain analysis.</td></tr>
+    <tr><td>Install Git Hook</td><td><code>graphify hook install</code></td><td>Re-execute after upgrading Graphify.</td></tr>
+    <tr><td>Create project graph</td><td>Use Step 2 Prompt in Quickstart and Create Project Graph sections</td><td>Generate and verify a valid <code>graph.json</code> first.</td></tr>
+    <tr><td>Integrate MCP</td><td>Use Step 3 Prompt in Quickstart section</td><td>Requires completing Step 2 graph building first.</td></tr>
+    <tr><td>Save query feedback</td><td><code>graphify save-result ...</code></td><td>Record useful / dead_end / corrected.</td></tr>
+    <tr><td>Aggregate experiences</td><td><code>graphify reflect --graph graphify-out/graph.json</code></td><td>Generates reflections and work memory overlays.</td></tr>
+    <tr><td>Uninstall</td><td><code>graphify uninstall</code></td><td><code>--purge</code> also deletes graph output directory.</td></tr>
+  </table>
+</div>
+
+    </div>
+
+    <div class="footer">
+      <p>Graphify Project Knowledge Graph — Quickstart Guide</p>
+      <p style="margin-top:4px;">Author: WeilinZhang (19523330249@163.com)</p>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+
+  <!-- Master Switcher & Route Coordination Script -->
+  <script>
+    let activeDoc = 'gbrain';
+
+    window.switchDocument = function(docKey, updateHash = true) {
+      // Sync all docs switchers
+      document.querySelectorAll('.docs-switcher').forEach(switcher => {
+        switcher.setAttribute('data-active', docKey);
+        const slider = switcher.querySelector('.switcher-slider');
+        const btns = switcher.querySelectorAll('.switcher-btn');
+        
+        if (docKey === 'gbrain') {
+          if (slider) slider.style.transform = 'translateX(0)';
+          btns[0]?.classList.add('active');
+          btns[1]?.classList.remove('active');
+        } else {
+          if (slider) slider.style.transform = 'translateX(calc(100% + 2px))';
+          btns[0]?.classList.remove('active');
+          btns[1]?.classList.add('active');
+        }
+      });
+
+      if (activeDoc === docKey) return;
+      
+      activeDoc = docKey;
+      
+      const gbrainContainer = document.getElementById('gbrain-container');
+      const graphifyContainer = document.getElementById('graphify-container');
+
+      if (docKey === 'gbrain') {
+        gbrainContainer.style.display = 'block';
+        graphifyContainer.style.display = 'none';
+        window.scrollTo(0, 0); // Force instant scroll-to-top when toggling document container
+        if (updateHash) {
+          window.location.hash = '#gbrain-intro-1';
+        }
+      } else {
+        gbrainContainer.style.display = 'none';
+        graphifyContainer.style.display = 'block';
+        window.scrollTo(0, 0); // Force instant scroll-to-top when toggling document container
+        if (updateHash) {
+          window.location.hash = '#graphify-intro';
+        }
+      }
+    };
+
+    // Intercept back/forward navigation or manual URL changes
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#gbrain-')) {
+        window.switchDocument('gbrain', false);
+      } else if (hash.startsWith('#graphify-')) {
+        window.switchDocument('graphify', false);
+      }
+    });
+
+    // Initialize switcher on load based on hash
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#graphify-')) {
+        window.switchDocument('graphify', false);
+      } else {
+        window.switchDocument('gbrain', false);
+      }
+    });
+  </script>
+
+  <!-- Original GBrain Client Script -->
+  <script>
+    
+// SPA Tab Router logic
+function handleRouting() {
+  const hash = window.location.hash || '#gbrain-intro-1';
+  if (!hash.startsWith('#gbrain-')) return;
+
+  // Map overview hash to actual section ID to prevent default browser anchor jump
+  const targetHash = hash === '#gbrain-intro-1' ? '#gbrain-intro-1-section' : hash;
+
+  // Find the target section
+  const targetSection = document.querySelector(targetHash);
+  if (!targetSection) return;
+
+  // 1. Hide all sections, and show only the active one
+  document.querySelectorAll('#gbrain-container .content .section').forEach(s => {
+    s.style.display = 'none';
+  });
+  targetSection.style.display = 'block';
+
+  // 2. Control Hero header visibility (only show for first section #gbrain-intro-1)
+  const isIntro = hash === '#gbrain-intro-1';
+  const hero = document.querySelector('#gbrain-container .hero');
+  if (hero) {
+    hero.style.display = isIntro ? 'block' : 'none';
+  }
+
+  // 3. Update sidebar active state
+  document.querySelectorAll('#gbrain-container .nav a').forEach(a => {
+    const href = a.getAttribute('href');
+    // Active if matches hash, or if parent matches #gbrain-intro-1 (Overview)
+    const isLinkActive = href === hash || (href === '#gbrain-intro-1' && a.classList.contains('nav-parent') && (hash === '#gbrain-intro-1' || hash === '#gbrain-agent'));
+    a.classList.toggle('active', isLinkActive);
+    
+    // Scroll active link into view inside nav sidebar
+    if (isLinkActive && window.innerWidth >= 1024) {
+      a.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+
+
+
+  // 5. Scroll to the top of the content page
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+// Listen to hashchange and initial load
+window.addEventListener('hashchange', handleRouting);
+window.addEventListener('DOMContentLoaded', handleRouting);
+
+// Intercept link clicks to change hash smoothly
+document.querySelectorAll('#gbrain-container .nav a, #gbrain-container a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      window.location.hash = href;
+    }
+  });
+});
+
+// Code copy button injector
+document.querySelectorAll('#gbrain-container pre').forEach(pre => {
+  const container = document.createElement('div');
+  container.className = 'copy-btn-container';
+  container.style.position = 'absolute';
+  container.style.top = '12px';
+  container.style.right = '12px';
+  container.style.zIndex = '10';
+  
+  const button = document.createElement('button');
+  button.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+      <path d="M216,40V168h-8V48H96V40a8,8,0,0,1,8-8H208A8,8,0,0,1,216,40Zm-40,24H48A8,8,0,0,0,40,72V200a8,8,0,0,0,8,8H176a8,8,0,0,0,8-8V72A8,8,0,0,0,176,64Zm-8,128H56V80H168Z"></path>
+    </svg>
+  `;
+  button.className = 'copy-btn';
+  button.style.background = 'rgba(0, 0, 0, 0.03)';
+  button.style.border = '1px solid rgba(0, 0, 0, 0.08)';
+  button.style.borderRadius = '6px';
+  button.style.color = 'var(--text-secondary)';
+  button.style.padding = '6px';
+  button.style.cursor = 'pointer';
+  button.style.display = 'flex';
+  button.style.alignItems = 'center';
+  button.style.justifyContent = 'center';
+  button.style.transition = 'all 0.2s';
+  
+  button.addEventListener('mouseenter', () => {
+    button.style.background = 'rgba(0, 0, 0, 0.08)';
+    button.style.color = 'var(--text)';
+  });
+  button.addEventListener('mouseleave', () => {
+    button.style.background = 'rgba(0, 0, 0, 0.03)';
+    button.style.color = 'var(--text-secondary)';
+  });
+  
+  button.addEventListener('click', () => {
+    const codeText = pre.querySelector('code')?.innerText || pre.innerText;
+    navigator.clipboard.writeText(codeText).then(() => {
+      button.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#34d399" viewBox="0 0 256 256">
+          <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path>
+        </svg>
+      `;
+      setTimeout(() => {
+        button.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M216,40V168h-8V48H96V40a8,8,0,0,1,8-8H208A8,8,0,0,1,216,40Zm-40,24H48A8,8,0,0,0,40,72V200a8,8,0,0,0,8,8H176a8,8,0,0,0,8-8V72A8,8,0,0,0,176,64Zm-8,128H56V80H168Z"></path>
+          </svg>
+        `;
+      }, 1500);
+    });
+  });
+  
+  container.appendChild(button);
+  pre.appendChild(container);
+});
+
+  </script>
+
+  <!-- Original Graphify Client Script -->
+  <script>
+    
+// SPA Tab Router logic
+function handleRouting() {
+  const hash = window.location.hash || '#graphify-intro';
+  if (!hash.startsWith('#graphify-')) return;
+
+  // Map overview hash to actual section ID to prevent default browser anchor jump
+  const targetHash = hash === '#graphify-intro' ? '#graphify-intro-section' : hash;
+
+  // Find the target section
+  const targetSection = document.querySelector(targetHash);
+  if (!targetSection) return;
+
+  // 1. Hide all sections, and show only the active one
+  document.querySelectorAll('#graphify-container .content .section').forEach(s => {
+    s.style.display = 'none';
+  });
+  targetSection.style.display = 'block';
+
+  // 2. Control Hero header visibility (only show for the landing section #graphify-intro)
+  const isIntro = hash === '#graphify-intro';
+  const hero = document.querySelector('#graphify-container .hero');
+  if (hero) {
+    hero.style.display = isIntro ? 'block' : 'none';
+  }
+
+  // 3. Update sidebar active state
+  document.querySelectorAll('#graphify-container .nav a').forEach(a => {
+    const href = a.getAttribute('href');
+    // Active if matches hash, or if parent matches #graphify-intro (Overview)
+    const isLinkActive = href === hash || (href === '#graphify-intro' && a.classList.contains('nav-parent') && (hash === '#graphify-intro' || hash === '#graphify-comparison' || hash === '#graphify-agent-integration'));
+    a.classList.toggle('active', isLinkActive);
+    
+    // Scroll active link into view inside nav sidebar
+    if (isLinkActive && window.innerWidth >= 1024) {
+      a.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+
+
+
+  // 5. Scroll to the top of the content page
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+// Listen to hashchange and initial load
+window.addEventListener('hashchange', handleRouting);
+window.addEventListener('DOMContentLoaded', handleRouting);
+
+// Intercept link clicks to change hash smoothly
+document.querySelectorAll('#graphify-container .nav a, #graphify-container a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      window.location.hash = href;
+    }
+  });
+});
+
+// Code copy button injector
+document.querySelectorAll('#graphify-container pre').forEach(pre => {
+  const container = document.createElement('div');
+  container.className = 'copy-btn-container';
+  container.style.position = 'absolute';
+  container.style.top = '12px';
+  container.style.right = '12px';
+  container.style.zIndex = '10';
+  
+  const button = document.createElement('button');
+  button.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+      <path d="M216,40V168h-8V48H96V40a8,8,0,0,1,8-8H208A8,8,0,0,1,216,40Zm-40,24H48A8,8,0,0,0,40,72V200a8,8,0,0,0,8,8H176a8,8,0,0,0,8-8V72A8,8,0,0,0,176,64Zm-8,128H56V80H168Z"></path>
+    </svg>
+  `;
+  button.className = 'copy-btn';
+  button.style.background = 'rgba(0, 0, 0, 0.03)';
+  button.style.border = '1px solid rgba(0, 0, 0, 0.08)';
+  button.style.borderRadius = '6px';
+  button.style.color = 'var(--text-secondary)';
+  button.style.padding = '6px';
+  button.style.cursor = 'pointer';
+  button.style.display = 'flex';
+  button.style.alignItems = 'center';
+  button.style.justifyContent = 'center';
+  button.style.transition = 'all 0.2s';
+  
+  button.addEventListener('mouseenter', () => {
+    button.style.background = 'rgba(0, 0, 0, 0.08)';
+    button.style.color = 'var(--text)';
+  });
+  button.addEventListener('mouseleave', () => {
+    button.style.background = 'rgba(0, 0, 0, 0.03)';
+    button.style.color = 'var(--text-secondary)';
+  });
+  
+  button.addEventListener('click', () => {
+    const codeText = pre.querySelector('code')?.innerText || pre.innerText;
+    navigator.clipboard.writeText(codeText).then(() => {
+      button.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#34d399" viewBox="0 0 256 256">
+          <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path>
+        </svg>
+      `;
+      setTimeout(() => {
+        button.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M216,40V168h-8V48H96V40a8,8,0,0,1,8-8H208A8,8,0,0,1,216,40Zm-40,24H48A8,8,0,0,0,40,72V200a8,8,0,0,0,8,8H176a8,8,0,0,0,8-8V72A8,8,0,0,0,176,64Zm-8,128H56V80H168Z"></path>
+          </svg>
+        `;
+      }, 1500);
+    });
+  });
+  
+  container.appendChild(button);
+  pre.appendChild(container);
+});
+
+  </script>
+
+</body>
+</html>

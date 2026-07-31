@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bootstrap Project Knowledge"
+  short_description: "Build Graphify and GBrain project knowledge"
+  default_prompt: "Build and verify Graphify and GBrain project knowledge for this workspace."

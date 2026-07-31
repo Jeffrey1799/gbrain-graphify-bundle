@@ -1,0 +1,10 @@
+{
+  "name": "gbrain-graphify",
+  "version": "1.0.0",
+  "description": "Install and operate GBrain memory and Graphify code graphs from Codex, Claude Code, Google Antigravity, WorkBuddy, Cursor, and VS Code.",
+  "author": {
+    "name": "Jeffrey1799"
+  },
+  "homepage": "https://github.com/Jeffrey1799/gbrain-graphify-bundle",
+  "repository": "https://github.com/Jeffrey1799/gbrain-graphify-bundle"
+}
