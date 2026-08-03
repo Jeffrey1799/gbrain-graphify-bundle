@@ -250,7 +250,7 @@ def mcp_handshake(command: str, args: list[str], timeout: int = 15) -> dict[str,
             "params": {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {},
-                "clientInfo": {"name": "gbrain-graphify-doctor", "version": "1.0.1"},
+                "clientInfo": {"name": "gbrain-graphify-doctor", "version": "1.0.2"},
             },
         })
         initialized = wait_for(1)

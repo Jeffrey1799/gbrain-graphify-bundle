@@ -63,21 +63,24 @@ Execute this skill to construct a complete two-tier project knowledge system for
    ```markdown
    ## Graphify AST Code Graph Exploration (System Guardrails)
 
-   ### 1. Hard Anti-Pattern Block (CRITICAL FORBIDDEN RULE)
-   - **Local Graph Check**: Before exploring the codebase, performing broad directory listings, or running native text/grep searches, check if `graphify-out/graph.json` exists in the workspace.
-   - **NEVER READ GRAPH JSON DIRECTLY**: NEVER execute `cat`, `grep`, `jq`, `sed`, `Get-Content`, `view_file`, or any native file readers directly on `graphify-out/graph.json`. Doing so will instantly corrupt your context window with megabyte-level noise tokens and fail the task.
+   1. **Hard Anti-Pattern Block (CRITICAL FORBIDDEN RULE)**
+      - **Local Graph Check**: Before exploring the codebase, performing broad directory listings, or running native text/grep searches, check if `graphify-out/graph.json` exists in the workspace.
+      - **NEVER READ GRAPH JSON DIRECTLY**: NEVER execute `cat`, `grep`, `jq`, `sed`, `Get-Content`, `view_file`, or any native file readers directly on `graphify-out/graph.json`. Doing so will instantly corrupt your context window with megabyte-level noise tokens and fail the task.
 
-   ### 2. Mandatory Query Protocol (Single-Keyword Only)
-   - **Single English Keyword Query**: For CLI (`graphify query "<keyword>"`) or MCP (`query_graph`), you MUST query using a **SINGLE English keyword** at a time (e.g., `query "drag"`, `query "import"`).
-   - **STRICTLY BANNED**: NEVER query using multi-word phrases, natural-language sentences, or space-separated lists (e.g. `query "drag and drop"` is BANNED). Break down complex tasks into discrete, individual English keyword queries to match exact AST code symbols.
-   - **Targeted Symbol Navigation**: Read and inspect ONLY the precise file paths, scoped subgraphs, and symbol dependencies returned by the graph output. Bypassing this via manual JSON parsing or unguided text searching is strictly forbidden.
+   2. **Mandatory Query Protocol (Single-Keyword Only)**
+      - **Single English Keyword Query**: For CLI (`graphify query "<keyword>"`) or MCP (`query_graph`), you MUST query using a SINGLE English keyword at a time (e.g., query "drag", query "import").
+      - **STRICTLY BANNED**: NEVER query using multi-word phrases, natural-language sentences, or space-separated lists (e.g. `query "drag and drop"` is BANNED). Break down complex tasks into discrete, individual English keyword queries to match exact AST code symbols.
+      - **Targeted Symbol Navigation**: Read and inspect ONLY the precise file paths, scoped subgraphs, and symbol dependencies returned by the graph output. Bypassing this via manual JSON parsing or unguided text searching is strictly forbidden.
 
-   ### 3. Execution Priority & Tool Precedence
-   1. **MCP Tools**: When available, invoke `query_graph` (single keyword), `get_node`, `get_neighbors`, or `shortest_path` for scoped AST symbol navigation.
-   2. **CLI Command**: Fall back to executing `graphify query "<single_keyword>"` in the shell if MCP tools are unavailable.
-   3. **Raw Search Fallback**: Use `grep` or file search strictly as a last resort when exact literal strings are missing from AST symbol nodes.
+   3. **Execution Priority & Tool Precedence**
+      1. **MCP Tools**: When available, invoke `query_graph` (single keyword), `get_node`, `get_neighbors`, or `shortest_path` for scoped AST symbol navigation.
+      2. **CLI Command**: Fall back to executing `graphify query "<single_keyword>"` in the shell if MCP tools are unavailable.
+      3. **Raw Search Fallback**: Use grep or file search strictly as a last resort when exact literal strings are missing from AST symbol nodes.
+
+   After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost).
 
    ## GBrain Persistent Project Memory
+
    - **Memory-First**: Query local GBrain database (`gbrain search "<keyword>"` or `gbrain_query` / `gbrain_search`) before asking the user about prior project context, architectural decisions, or past work.
    - **Durable Write-Back**: After completing major features, refactors, or bug fixes, record durable project knowledge back into GBrain (`gbrain sync` or `put_page`).
    ```

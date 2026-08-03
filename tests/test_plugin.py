@@ -53,7 +53,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(claude["name"], PLUGIN.name)
         self.assertEqual(codex["version"], claude["version"])
         self.assertEqual(claude_market["plugins"][0]["version"], codex["version"])
-        self.assertEqual(codex["version"], "1.0.1")
+        self.assertEqual(codex["version"], "1.0.2")
 
     def test_pinned_tool_manifest_is_consistent(self) -> None:
         versions = json.loads((SCRIPTS / "versions.json").read_text(encoding="utf-8"))
