@@ -39,10 +39,7 @@ Execute this skill to construct a complete two-tier project knowledge system for
    - Linux/macOS: `~/brain/projects/<project-slug>/`
    - Windows: `%USERPROFILE%\brain\projects\<project-slug>\`
 3. Distill project knowledge by examining repository metadata, key entrypoints, configurations, and recent Git history (`git log --oneline -n 20` and `git show` on key architectural commits).
-4. Create or update structural Markdown files in `~/brain/projects/<project-slug>/`:
-   - `overview.md`: Project purpose, core tech stack, entrypoints, directory mapping, and runtime flows.
-   - `architecture.md`: Main modules, data models, interfaces, dependency graph, and key symbols.
-   - `decisions.md`: Architectural choices, historical refactors, known caveats, trade-offs, and Git evolution evidence.
+4. Create or update structural Markdown files in `~/brain/projects/<project-slug>/`.
 5. Sync distilled markdown pages into the GBrain PGLite database:
    ```text
    gbrain sync
@@ -91,7 +88,7 @@ Execute this skill to construct a complete two-tier project knowledge system for
 
 After completing Phase 1–3, report cleanly to the user:
 - **Graphify Code Graph**: `graphify-out/graph.json` generated & git hooks installed (total god-nodes reported).
-- **GBrain Project Brain**: `~/brain/projects/<project-slug>/` pages generated (`overview.md`, `architecture.md`, `decisions.md`) & `gbrain sync` status.
+- **GBrain Project Brain**: `~/brain/projects/<project-slug>/` pages generated (list the actual pages created) & `gbrain sync` status.
 - **Project Rules**: `AGENTS.md` / `CLAUDE.md` updated with Graphify & GBrain rules.
 - **Verification Commands**:
   - `graphify god-nodes --json`
