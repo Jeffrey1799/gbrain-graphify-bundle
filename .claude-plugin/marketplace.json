@@ -10,7 +10,7 @@
       "name": "gbrain-graphify",
       "source": "./plugins/gbrain-graphify",
       "description": "Install and operate GBrain memory and Graphify code graphs from Codex, Claude Code, Google Antigravity, WorkBuddy, Cursor, and VS Code.",
-      "version": "1.0.2"
+      "version": "1.0.3"
     }
   ]
 }

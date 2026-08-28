@@ -1,6 +1,6 @@
 ---
 name: gbrain-graphify-doctor
-description: Diagnose GBrain and Graphify installation, pinned versions, MCP stdio registrations, and an optional workspace graph. Use when setup fails, an agent cannot see MCP tools, Graphify queries fail, or the user requests an integration health check.
+description: Diagnose GBrain and Graphify installation, installed versions against the latest official releases, MCP stdio registrations, and an optional workspace graph. Use when setup fails, an agent cannot see MCP tools, Graphify queries fail, or the user requests an integration health check.
 ---
 
 # Diagnose GBrain and Graphify
@@ -13,7 +13,8 @@ python <plugin-root>/scripts/doctor.py --agents <current-host>
 ```
 
 The doctor is read-only unless `--fix-bom` is explicitly requested. It checks
-exact pinned versions, host MCP stdio entries, GBrain health, direct MCP
+installed versions against the latest official releases (network permitting),
+host MCP stdio entries, GBrain health, direct MCP
 `initialize`/`tools/list` handshakes, and optional Graphify graph availability.
 Pass `--workspace <workspace>` only when a project graph should also be checked.
 
@@ -22,8 +23,8 @@ and invokes Graphify commands for semantic validation.
 
 Interpret required failures before suggesting changes:
 
-- `binary` or `version`: rerun setup; approve `--upgrade` only for an installed
-  version mismatch.
+- `binary` or `version`: rerun setup; approve `--upgrade` only when the
+  installed version is behind the latest official release.
 - `mcp_*` or `adapter_*`: preserve unrelated entries; rerun only the
   affected host adapter. For platforms without CLI-based MCP registration,
   verify the GBrain stdio server (`gbrain serve`) is configured manually in

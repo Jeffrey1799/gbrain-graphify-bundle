@@ -1,6 +1,6 @@
 # GBrain + Graphify 插件
 
-正式支持 Codex、Claude Code、Google Antigravity、WorkBuddy、Cursor 与 VS Code。插件安装固定版本的本地
+正式支持 Codex、Claude Code、Google Antigravity、WorkBuddy、Cursor 与 VS Code。插件安装官方最新版本的本地
 GBrain 和 Graphify，并通过 stdio MCP 注册。GBrain 数据保存在用户目录中；
 不会创建 HTTP 服务、OAuth 流程或令牌。
 

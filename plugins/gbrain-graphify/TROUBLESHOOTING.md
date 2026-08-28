@@ -34,7 +34,7 @@ try {
 |------|-------------|
 | **Symptom** | Initialization requests an embedding provider or fails before creating the local database |
 | **Root cause** | Plain `--pglite` can initialize the embedding pipeline |
-| **Fix** | Run the pinned installer command directly in keyword-only mode |
+| **Fix** | Run the installer command directly in keyword-only mode |
 
 ```powershell
 & gbrain init --pglite --no-embedding
@@ -98,9 +98,9 @@ $utf8Bom = New-Object System.Text.UTF8Encoding($true)
 ### `bun install -g` fails on Windows (Fail extracting tarball)
 
 `bun install -g` may occasionally report `Fail extracting tarball` on Windows.
-The setup script then downloads the pinned commit from the official GBrain
-repository and compiles it locally. If both paths fail, do not build an
-unpinned branch: fix the reported network, permission, or Bun error and rerun
+The setup script then downloads the latest source from the official GBrain
+repository and compiles it locally. If both paths fail, do not build from an
+unofficial source: fix the reported network, permission, or Bun error and rerun
 the same root bootstrap command.
 
 ---

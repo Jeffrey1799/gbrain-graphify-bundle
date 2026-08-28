@@ -1,6 +1,7 @@
 # Installing GBrain and Graphify
 
-This repository delivers a pinned, verifiable installer for GBrain persistent
+This repository delivers a verifiable installer that follows the latest
+official releases of GBrain persistent
 memory and Graphify local code graphs. GBrain and Graphify are registered as
 local stdio MCP servers. They share user-level data without opening a port or
 starting a resident service.
@@ -30,7 +31,7 @@ Valid host values are `codex`, `claude`, `antigravity`, `workbuddy`, `cursor`,
 and `vscode`. The bootstrap
 registers this checkout as the local plugin marketplace when the host supports
 marketplaces, installs the plugin,
-installs pinned upstream tools, initializes keyword-only GBrain, configures the
+installs the latest official upstream tools, initializes keyword-only GBrain, configures the
 host, and runs strict diagnostics.
 
 Installing from a clean host is authorized by the original “follow the
@@ -49,7 +50,8 @@ mirror flag is explicitly provided.
 
 Setup reports success only after all of these checks pass:
 
-- exact pinned GBrain and Graphify versions;
+- GBrain and Graphify versions match the latest official releases (network
+  permitting);
 - expected stdio command and arguments in the selected host;
 - `gbrain doctor --json`;
 - MCP `initialize` and `tools/list` against `gbrain serve` and `graphify-mcp`.

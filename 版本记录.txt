@@ -1,0 +1,9 @@
+# 版本记录
+
+## v1.0.3（2026-08-28）
+
+- 版本策略调整：不再固定 GBrain 0.42.67.0 / Graphify 0.9.30，改为以工具官方仓库的最新发布版本为准（`versions.json` 使用 `channel: "latest"`）。
+- `setup.sh` / `setup.ps1`：新增官方最新版本查询（GBrain 走 GitHub releases/tags API，Graphify 走 PyPI JSON）；GBrain 改用默认分支安装（`bun install -g github:garrytan/gbrain`），Graphify 安装不带版本号（`uv tool install graphifyy[mcp,chinese]`）；已装版本落后于最新时仍需显式 `-Upgrade`/`--upgrade` 才升级，网络不可用时降级放行。
+- `doctor.py`：版本检查改为动态比对官方最新发布，输出 `versionCheck: ok | stale | unknown`；仅 stale 时建议 `--upgrade`。
+- 更新 setup / doctor 两个 skill 的 SKILL.md 与全部 README、THIRD_PARTY_NOTICES、TROUBLESHOOTING 中关于固定版本的表述。
+- 插件版本号由 1.0.2 升至 1.0.3。

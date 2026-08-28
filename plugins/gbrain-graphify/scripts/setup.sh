@@ -183,16 +183,66 @@ if [[ "$dry_run" == 0 ]]; then
 fi
 
 if command -v "${python_cmd[0]}" >/dev/null 2>&1; then
-  gbrain_version="$("${python_cmd[@]}" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["gbrain"]["version"])' "$script_dir/versions.json")"
-  gbrain_commit="$("${python_cmd[@]}" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["gbrain"]["commit"])' "$script_dir/versions.json")"
-  graphify_version="$("${python_cmd[@]}" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["graphify"]["version"])' "$script_dir/versions.json")"
   graphify_extras="$("${python_cmd[@]}" -c 'import json,sys; print(",".join(json.load(open(sys.argv[1], encoding="utf-8"))["graphify"]["extras"]))' "$script_dir/versions.json")"
 else
-  gbrain_version='<pinned>'
-  gbrain_commit='<pinned-commit>'
-  graphify_version='<pinned>'
   graphify_extras='mcp,chinese'
 fi
+
+fetch_json() {
+  local url="$1"
+  curl --fail --silent --location --max-time 15 -H 'User-Agent: gbrain-graphify-setup' "$url" 2>/dev/null || true
+}
+
+# Latest official release of GBrain (GitHub releases, falling back to tags).
+# Returns an empty string when the network is unavailable; callers treat an
+# empty value as "unknown" and only require the binary to exist.
+latest_gbrain_version() {
+  local override="${GBRAIN_GRAPHIFY_LATEST_GBRAIN:-}"
+  [[ -n "$override" ]] && { printf '%s\n' "$override"; return; }
+  local payload tag
+  payload="$(fetch_json 'https://api.github.com/repos/garrytan/gbrain/releases/latest')"
+  if [[ -n "$payload" ]]; then
+    tag="$("${python_cmd[@]}" -c 'import json,sys
+try:
+    data = json.load(sys.stdin)
+    tag = data.get("tag_name") if isinstance(data, dict) else None
+    print(tag.lstrip("v") if isinstance(tag, str) and tag else "")
+except Exception:
+    print("")' <<<"$payload")"
+    [[ -n "$tag" ]] && { printf '%s\n' "$tag"; return; }
+  fi
+  payload="$(fetch_json 'https://api.github.com/repos/garrytan/gbrain/tags')"
+  if [[ -n "$payload" ]]; then
+    tag="$("${python_cmd[@]}" -c 'import json,sys
+try:
+    data = json.load(sys.stdin)
+    name = data[0].get("name") if isinstance(data, list) and data else None
+    print(name.lstrip("v") if isinstance(name, str) and name else "")
+except Exception:
+    print("")' <<<"$payload")"
+    [[ -n "$tag" ]] && { printf '%s\n' "$tag"; return; }
+  fi
+  return 0
+}
+
+# Latest official release of Graphify (PyPI JSON API).
+latest_graphify_version() {
+  local override="${GBRAIN_GRAPHIFY_LATEST_GRAPHIFY:-}"
+  [[ -n "$override" ]] && { printf '%s\n' "$override"; return; }
+  local payload version
+  payload="$(fetch_json 'https://pypi.org/pypi/graphifyy/json')"
+  if [[ -n "$payload" ]]; then
+    version="$("${python_cmd[@]}" -c 'import json,sys
+try:
+    data = json.load(sys.stdin)
+    value = data.get("info", {}).get("version") if isinstance(data, dict) else None
+    print(value if isinstance(value, str) and value else "")
+except Exception:
+    print("")' <<<"$payload")"
+    [[ -n "$version" ]] && { printf '%s\n' "$version"; return; }
+  fi
+  return 0
+}
 
 if command -v bun >/dev/null 2>&1 && command -v "${python_cmd[0]}" >/dev/null 2>&1 && ! bun --version | "${python_cmd[@]}" -c 'import sys; v=tuple(map(int, sys.stdin.read().strip().split(".")[:3])); raise SystemExit(0 if v >= (1,3,10) else 1)'; then
   echo "Bun 1.3.10+ required" >&2
@@ -298,9 +348,13 @@ installed_gbrain=""
 if command -v gbrain >/dev/null 2>&1; then
   installed_gbrain="$(gbrain --help 2>/dev/null | head -n 1 | awk '{print $2}')"
 fi
-if [[ -n "$installed_gbrain" && "$installed_gbrain" != "$gbrain_version" && "$upgrade" == 0 ]]; then
-  echo "GBrain $installed_gbrain is installed; pinned version is $gbrain_version. Rerun with --upgrade after approval." >&2
-  exit 1
+gbrain_latest=""
+if [[ -n "$installed_gbrain" ]]; then
+  gbrain_latest="$(latest_gbrain_version)"
+  if [[ -n "$gbrain_latest" && "$installed_gbrain" != "$gbrain_latest" && "$upgrade" == 0 ]]; then
+    echo "GBrain $installed_gbrain is installed; latest release is $gbrain_latest. Rerun with --upgrade to update to the latest release." >&2
+    exit 1
+  fi
 fi
 installed_graphify=""
 if command -v uv >/dev/null 2>&1; then
@@ -315,22 +369,32 @@ elif command -v uv >/dev/null 2>&1 && command -v graphify-mcp >/dev/null 2>&1; t
     graphify_extras_ok=1
   fi
 fi
-if [[ -n "$installed_graphify" && "$installed_graphify" != "$graphify_version" && "$upgrade" == 0 ]]; then
-  echo "Graphify $installed_graphify is installed; pinned version is $graphify_version. Rerun with --upgrade after approval." >&2
-  exit 1
+graphify_latest=""
+if [[ -n "$installed_graphify" ]]; then
+  graphify_latest="$(latest_graphify_version)"
+  if [[ -n "$graphify_latest" && "$installed_graphify" != "$graphify_latest" && "$upgrade" == 0 ]]; then
+    echo "Graphify $installed_graphify is installed; latest release is $graphify_latest. Rerun with --upgrade to update to the latest release." >&2
+    exit 1
+  fi
 fi
 
 step 'Phase 2/3: apply'
 
-# Install / verify GBrain
-if [[ "$installed_gbrain" != "$gbrain_version" ]]; then
+# Install / verify GBrain (latest official release from the default branch)
+gbrain_outdated=0
+if [[ -z "$installed_gbrain" ]]; then
+  gbrain_outdated=1
+elif [[ -n "$gbrain_latest" && "$installed_gbrain" != "$gbrain_latest" ]]; then
+  gbrain_outdated=1
+fi
+if [[ "$gbrain_outdated" == 1 ]]; then
   if [[ "$dry_run" == 1 ]]; then
-    step "bun install -g github:garrytan/gbrain#$gbrain_commit"
-  elif ! bun install -g "github:garrytan/gbrain#$gbrain_commit"; then
-    step "Bun global install failed; building the pinned source archive"
+    step "bun install -g github:garrytan/gbrain"
+  elif ! bun install -g "github:garrytan/gbrain"; then
+    step "Bun global install failed; building the latest source archive"
     build_dir="$(mktemp -d)"
     trap 'rm -rf -- "$build_dir"' EXIT
-    gbrain_archive_url="https://codeload.github.com/garrytan/gbrain/tar.gz/$gbrain_commit"
+    gbrain_archive_url="https://codeload.github.com/garrytan/gbrain/tar.gz/HEAD"
     if [[ "$use_mirror_cn" == 1 ]]; then
       gbrain_archive_url="https://ghproxy.net/$gbrain_archive_url"
     fi
@@ -345,13 +409,19 @@ if [[ "$installed_gbrain" != "$gbrain_version" ]]; then
   fi
 fi
 
-# Install / verify Graphify
-if [[ "$installed_graphify" != "$graphify_version" || "$graphify_extras_ok" == 0 ]]; then
+# Install / verify Graphify (latest official PyPI release)
+graphify_outdated=0
+if [[ -z "$installed_graphify" ]]; then
+  graphify_outdated=1
+elif [[ -n "$graphify_latest" && "$installed_graphify" != "$graphify_latest" ]]; then
+  graphify_outdated=1
+fi
+if [[ "$graphify_outdated" == 1 || "$graphify_extras_ok" == 0 ]]; then
   if [[ "$use_mirror_cn" == 1 ]]; then
     step "Using Tsinghua PyPI mirror for Graphify installation"
-    run uv tool install --force --index-url https://pypi.tuna.tsinghua.edu.cn/simple "graphifyy[$graphify_extras]==$graphify_version"
+    run uv tool install --force --index-url https://pypi.tuna.tsinghua.edu.cn/simple "graphifyy[$graphify_extras]"
   else
-    run uv tool install --force "graphifyy[$graphify_extras]==$graphify_version"
+    run uv tool install --force "graphifyy[$graphify_extras]"
   fi
 fi
 

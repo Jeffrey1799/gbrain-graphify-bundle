@@ -1,6 +1,6 @@
 ---
 name: gbrain-graphify-setup
-description: Install or upgrade pinned GBrain and Graphify builds, initialize local GBrain, register both tools as stdio MCP servers, and strictly verify Codex, Claude Code, Google Antigravity, WorkBuddy, Cursor, or VS Code. Use when the user asks to install, set up, configure, update, or connect GBrain and Graphify.
+description: Install or upgrade the latest official GBrain and Graphify releases, initialize local GBrain, register both tools as stdio MCP servers, and strictly verify Codex, Claude Code, Google Antigravity, WorkBuddy, Cursor, or VS Code. Use when the user asks to install, set up, configure, update, or connect GBrain and Graphify.
 ---
 
 # Set up GBrain and Graphify
@@ -73,7 +73,7 @@ only when the user explicitly authorized that specific state change.
 The setup script runs `scripts/doctor.py`. Do not claim success unless doctor
 returns exit code 0 and JSON `ok: true`. Required checks include:
 
-- exact pinned GBrain and Graphify versions;
+- latest official GBrain and Graphify versions (network permitting);
 - expected host stdio command and arguments;
 - `gbrain doctor --json`;
 - MCP `initialize` and non-empty `tools/list` for `gbrain serve` and
@@ -86,7 +86,7 @@ project rule file, paid model, or API key was configured.
 
 ## Failure behavior
 
-Fail closed on invalid JSON, existing MCP conflicts, version mismatches, missing
+Fail closed on invalid JSON, existing MCP conflicts, outdated tool versions, missing
 permissions, unavailable official sources, failed GBrain health, or failed MCP
 handshake. Consult `<plugin-root>/TROUBLESHOOTING.md` and report the smallest
 recovery command. Never patch or commit the installer during a user's setup.

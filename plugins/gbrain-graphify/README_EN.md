@@ -2,7 +2,7 @@
 
 Supported one-shot hosts are Codex, Claude Code, Google Antigravity, WorkBuddy,
 Cursor, and VS Code. The plugin
-installs pinned local GBrain and Graphify tools and registers both through stdio
+installs the latest official GBrain and Graphify releases and registers both through stdio
 MCP. GBrain data persists under the user's profile; no HTTP service, OAuth flow,
 or token is created.
 

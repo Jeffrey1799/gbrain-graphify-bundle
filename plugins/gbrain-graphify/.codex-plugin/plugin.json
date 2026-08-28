@@ -1,6 +1,6 @@
 {
   "name": "gbrain-graphify",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Install and operate GBrain memory and Graphify code graphs from Codex, Claude Code, Google Antigravity, WorkBuddy, Cursor, and VS Code.",
   "author": {
     "name": "Jeffrey1799",
@@ -13,7 +13,7 @@
   "interface": {
     "displayName": "GBrain + Graphify",
     "shortDescription": "Persistent memory and local code graphs for six supported coding hosts.",
-    "longDescription": "Guides a safe, pinned installation of GBrain and Graphify, configures their MCP integrations, and bootstraps local project graphs.",
+    "longDescription": "Guides a safe installation of the latest official GBrain and Graphify releases, configures their MCP integrations, and bootstraps local project graphs.",
     "developerName": "Jeffrey1799",
     "category": "Developer Tools",
     "capabilities": ["Local tools", "MCP", "Knowledge"],

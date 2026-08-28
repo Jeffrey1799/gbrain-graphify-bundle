@@ -1,6 +1,6 @@
 # 安装 GBrain 与 Graphify
 
-本仓库提供固定版本、可验证的 GBrain 持久记忆与 Graphify 本地代码图谱安装流程。
+本仓库提供跟随官方最新版本、可验证的 GBrain 持久记忆与 Graphify 本地代码图谱安装流程。
 两个 MCP 均使用本地 stdio，不开放端口、不配置 OAuth，也不创建常驻服务。
 
 ## One-shot 流程
@@ -25,7 +25,7 @@ bash ./bootstrap.sh --agent claude
 
 正式支持的宿主值为 `codex`、`claude`、`antigravity`、`workbuddy`、`cursor`、
 `vscode`。bootstrap 会从当前
-checkout 注册本地插件、安装固定版本工具、以无 embedding 模式初始化 GBrain、
+checkout 注册本地插件、安装官方最新版本工具、以无 embedding 模式初始化 GBrain、
 配置宿主并运行严格诊断。
 
 原始提示中的“按指引操作”授权干净环境的用户级安装。下列行为可能替换状态或改变
@@ -42,7 +42,7 @@ checkout 注册本地插件、安装固定版本工具、以无 embedding 模式
 
 只有以下检查全部通过，setup 才会报告成功：
 
-- GBrain 与 Graphify 精确匹配固定版本；
+- GBrain 与 Graphify 匹配官方最新发布版本（网络可用时校验）；
 - 当前宿主中的 stdio 命令和参数完全正确；
 - `gbrain doctor --json` 通过；
 - `gbrain serve` 与 `graphify-mcp` 均完成 MCP `initialize` 和 `tools/list`。

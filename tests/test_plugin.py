@@ -53,15 +53,17 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(claude["name"], PLUGIN.name)
         self.assertEqual(codex["version"], claude["version"])
         self.assertEqual(claude_market["plugins"][0]["version"], codex["version"])
-        self.assertEqual(codex["version"], "1.0.2")
+        self.assertEqual(codex["version"], "1.0.3")
 
-    def test_pinned_tool_manifest_is_consistent(self) -> None:
+    def test_tool_manifest_follows_latest(self) -> None:
         versions = json.loads((SCRIPTS / "versions.json").read_text(encoding="utf-8"))
         notices = (PLUGIN / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8")
         self.assertEqual(versions["graphify"]["extras"], ["mcp", "chinese"])
-        self.assertIn(versions["gbrain"]["version"], notices)
-        self.assertIn(versions["gbrain"]["commit"], notices)
-        self.assertIn(versions["graphify"]["version"], notices)
+        self.assertEqual(versions["gbrain"]["channel"], "latest")
+        self.assertEqual(versions["graphify"]["channel"], "latest")
+        self.assertNotIn("Pinned version", notices)
+        self.assertNotIn("0.42.67.0", notices)
+        self.assertNotIn("0.9.30", notices)
 
     def test_repository_urls_are_canonical(self) -> None:
         stale = "github.com/Jeffrey1799/" + "getting-started-with-" + "gbrain-and-graphify"
@@ -461,6 +463,27 @@ for line in sys.stdin:
         self.assertTrue(doctor.host_config_has_conflict(conflict))
         self.assertFalse(doctor.host_config_has_conflict(invalid))
 
+    def test_latest_version_env_override_and_offline_fallback(self) -> None:
+        with mock.patch.dict(os.environ, {
+            "GBRAIN_GRAPHIFY_LATEST_GBRAIN": "1.2.3",
+            "GBRAIN_GRAPHIFY_LATEST_GRAPHIFY": "4.5.6",
+        }):
+            self.assertEqual(doctor.latest_gbrain_version(), "1.2.3")
+            self.assertEqual(doctor.latest_graphify_version(), "4.5.6")
+        with mock.patch.object(doctor, "_http_json", return_value=None):
+            self.assertIsNone(doctor.latest_gbrain_version())
+            self.assertIsNone(doctor.latest_graphify_version())
+
+    def test_latest_gbrain_version_strips_v_prefix_and_falls_back_to_tags(self) -> None:
+        with mock.patch.object(doctor, "_http_json", return_value={"tag_name": "v1.2.3"}):
+            self.assertEqual(doctor.latest_gbrain_version(), "1.2.3")
+        with mock.patch.object(doctor, "_http_json", side_effect=[None, [{"name": "v2.0.0"}]]):
+            self.assertEqual(doctor.latest_gbrain_version(), "2.0.0")
+
+    def test_latest_graphify_version_parses_pypi_payload(self) -> None:
+        with mock.patch.object(doctor, "_http_json", return_value={"info": {"version": "0.9.30"}}):
+            self.assertEqual(doctor.latest_graphify_version(), "0.9.30")
+
     def test_gbrain_health_requires_database_connection(self) -> None:
         payload = {
             "schema_version": 2,
@@ -788,6 +811,8 @@ class GuideTests(unittest.TestCase):
                 "HOME": str(home),
                 "LOCALAPPDATA": str(local_app_data),
                 "PATH": str(bin_dir),
+                # Pin the "latest" release so the check is deterministic offline.
+                "GBRAIN_GRAPHIFY_LATEST_GBRAIN": "1.0.0",
             })
             result = subprocess.run(
                 [
@@ -812,6 +837,7 @@ class GuideTests(unittest.TestCase):
             output = result.stdout + result.stderr
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("GBrain 9.9.9 is installed", output)
+            self.assertIn("latest release is 1.0.0", output)
             self.assertNotIn("Phase 2/3", output)
 
     @unittest.skipUnless(os.name == "nt" and shutil.which("powershell.exe"), "Windows PowerShell only")

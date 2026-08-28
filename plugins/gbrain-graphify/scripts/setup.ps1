@@ -154,6 +154,31 @@ function Test-GraphifyExtras {
     }
 }
 
+function Get-LatestGBrainVersion {
+    $override = $env:GBRAIN_GRAPHIFY_LATEST_GBRAIN
+    if ($override) { return $override }
+    $headers = @{ 'User-Agent' = 'gbrain-graphify-setup' }
+    try {
+        $release = Invoke-RestMethod -Uri 'https://api.github.com/repos/garrytan/gbrain/releases/latest' -Headers $headers -TimeoutSec 10
+        if ($release.tag_name) { return ([string]$release.tag_name).TrimStart('v') }
+    } catch { }
+    try {
+        $tags = Invoke-RestMethod -Uri 'https://api.github.com/repos/garrytan/gbrain/tags' -Headers $headers -TimeoutSec 10
+        if ($tags -and $tags[0] -and $tags[0].name) { return ([string]$tags[0].name).TrimStart('v') }
+    } catch { }
+    return $null
+}
+
+function Get-LatestGraphifyVersion {
+    $override = $env:GBRAIN_GRAPHIFY_LATEST_GRAPHIFY
+    if ($override) { return $override }
+    try {
+        $payload = Invoke-RestMethod -Uri 'https://pypi.org/pypi/graphifyy/json' -TimeoutSec 10
+        if ($payload.info.version) { return [string]$payload.info.version }
+    } catch { }
+    return $null
+}
+
 function Ensure-GBrainInit {
     $configPath = Join-Path $env:USERPROFILE '.gbrain\config.json'
     if (Test-Path -LiteralPath $configPath) {
@@ -172,7 +197,6 @@ function Get-GBrainPath {
 }
 
 function Install-GBrainFallback {
-    param([string]$CommitHash)
     $tempRoot = Join-Path ([IO.Path]::GetTempPath()) ('gbrain-fallback-' + [guid]::NewGuid().ToString('N'))
     $binDir = Join-Path $env:LOCALAPPDATA 'GBrainGraphify\bin'
     $output = Join-Path $binDir 'gbrain.exe'
@@ -180,12 +204,12 @@ function Install-GBrainFallback {
 
     try {
         New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null
-        $uri = "https://github.com/garrytan/gbrain/archive/$CommitHash.zip"
+        $uri = 'https://github.com/garrytan/gbrain/archive/HEAD.zip'
         if ($UseMirrorCN) {
-            $uri = "https://ghproxy.net/https://github.com/garrytan/gbrain/archive/$CommitHash.zip"
+            $uri = 'https://ghproxy.net/https://github.com/garrytan/gbrain/archive/HEAD.zip'
             Write-Step "Using CN Mirror for GBrain source download: $uri"
         } else {
-            Write-Step "Downloading GBrain source (commit $CommitHash)..."
+            Write-Step 'Downloading GBrain source (default branch)...'
         }
         Invoke-WebRequest -Uri $uri -OutFile $archive -UseBasicParsing
 
@@ -220,7 +244,7 @@ function Install-GBrainFallback {
     Write-Step "GBrain fallback build complete: $output"
 }
 
-function Assert-PinnedVersions {
+function Assert-LatestVersions {
     if (Get-Command bun -ErrorAction SilentlyContinue) {
         $bunVersion = & bun --version 2>&1
         if ($bunVersion -match '([0-9]+\.[0-9]+(?:\.[0-9]+)?)' -and
@@ -230,27 +254,33 @@ function Assert-PinnedVersions {
     }
 
     $gbrainVersion = Get-GBrainVersion
-    $expectedGBrain = [string]$versions.gbrain.version
-    if ($gbrainVersion -and $gbrainVersion -ne $expectedGBrain -and -not $Upgrade) {
-        throw "GBrain $gbrainVersion is installed; pinned version is $expectedGBrain. Rerun with -Upgrade after approval."
+    if ($gbrainVersion) {
+        $latestGBrain = Get-LatestGBrainVersion
+        if ($latestGBrain -and $gbrainVersion -ne $latestGBrain -and -not $Upgrade) {
+            throw "GBrain $gbrainVersion is installed; latest release is $latestGBrain. Rerun with -Upgrade to update to the latest release."
+        }
     }
     $graphifyVersion = Get-GraphifyVersion
-    $expectedGraphify = [string]$versions.graphify.version
-    if ($graphifyVersion -and $graphifyVersion -ne $expectedGraphify -and -not $Upgrade) {
-        throw "Graphify $graphifyVersion is installed; pinned version is $expectedGraphify. Rerun with -Upgrade after approval."
+    if ($graphifyVersion) {
+        $latestGraphify = Get-LatestGraphifyVersion
+        if ($latestGraphify -and $graphifyVersion -ne $latestGraphify -and -not $Upgrade) {
+            throw "Graphify $graphifyVersion is installed; latest release is $latestGraphify. Rerun with -Upgrade to update to the latest release."
+        }
     }
 }
 
-function Ensure-PinnedTools {
+function Ensure-LatestTools {
     Ensure-Command 'bun' 'Oven-sh.Bun'
     Ensure-Command 'uv' 'astral-sh.uv'
     Ensure-Python
-    Assert-PinnedVersions
+    Assert-LatestVersions
 
     $gbrainVersion = Get-GBrainVersion
-    $expectedGBrain = [string]$versions.gbrain.version
-    if ($gbrainVersion -ne $expectedGBrain) {
-        $source = "github:garrytan/gbrain#$($versions.gbrain.commit)"
+    $latestGBrain = $null
+    if ($gbrainVersion) { $latestGBrain = Get-LatestGBrainVersion }
+    $gbrainOutdated = -not $gbrainVersion -or ($latestGBrain -and $gbrainVersion -ne $latestGBrain)
+    if ($gbrainOutdated) {
+        $source = 'github:garrytan/gbrain'
         $usedFallback = $false
         try {
             Invoke-Tool (Resolve-ToolPath 'bun') @('install', '-g', $source)
@@ -260,12 +290,12 @@ function Ensure-PinnedTools {
             # Check if gbrain is actually available before falling back.
             Refresh-UserPath
             $installedVersion = Get-GBrainVersion
-            if ($installedVersion -eq $expectedGBrain) {
+            if ($installedVersion -and (-not $latestGBrain -or $installedVersion -eq $latestGBrain)) {
                 Write-Step "GBrain shim found at $(Resolve-ToolPath 'gbrain'); using it despite install warning."
             } else {
                 Write-Step "GBrain not available after bun install; attempting fallback build from source..."
                 try {
-                    Install-GBrainFallback -CommitHash $versions.gbrain.commit
+                    Install-GBrainFallback
                     $usedFallback = $true
                 } catch {
                     throw "GBrain installation failed: bun install -g AND fallback build both failed. " +
@@ -281,10 +311,12 @@ function Ensure-PinnedTools {
     }
 
     $graphifyVersion = Get-GraphifyVersion
-    $expectedGraphify = [string]$versions.graphify.version
-    if ($graphifyVersion -ne $expectedGraphify -or -not (Test-GraphifyExtras)) {
+    $latestGraphify = $null
+    if ($graphifyVersion) { $latestGraphify = Get-LatestGraphifyVersion }
+    $graphifyOutdated = -not $graphifyVersion -or ($latestGraphify -and $graphifyVersion -ne $latestGraphify)
+    if ($graphifyOutdated -or -not (Test-GraphifyExtras)) {
         $extras = ($versions.graphify.extras | Where-Object { $_ }) -join ','
-        $package = "graphifyy[$extras]==$expectedGraphify"
+        $package = "graphifyy[$extras]"
         $uvArgs = @('tool', 'install', '--force')
         if ($UseMirrorCN) {
             $uvArgs += @('--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple')
@@ -593,10 +625,10 @@ Write-Step 'Phase 1/3: preflight'
 if (-not $DryRun) { Refresh-UserPath }
 Assert-HostCommands
 Assert-NoHostConflicts
-Assert-PinnedVersions
+Assert-LatestVersions
 
 Write-Step 'Phase 2/3: apply'
-Ensure-PinnedTools
+Ensure-LatestTools
 Ensure-GBrainInit
 
 $gbrainPath = Get-GBrainPath

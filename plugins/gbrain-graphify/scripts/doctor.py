@@ -13,6 +13,7 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.request
 from pathlib import Path
 
 
@@ -250,7 +251,7 @@ def mcp_handshake(command: str, args: list[str], timeout: int = 15) -> dict[str,
             "params": {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {},
-                "clientInfo": {"name": "gbrain-graphify-doctor", "version": "1.0.2"},
+                "clientInfo": {"name": "gbrain-graphify-doctor", "version": "1.0.3"},
             },
         })
         initialized = wait_for(1)
@@ -318,6 +319,47 @@ def graphify_version() -> str | None:
             return json.loads(result.stdout)["venvs"]["graphifyy"]["metadata"]["main_package"]["package_version"]
         except (KeyError, TypeError, json.JSONDecodeError):
             pass
+    return None
+
+
+def _http_json(url: str, timeout: int = 10) -> object | None:
+    """Fetch and parse a JSON document over HTTPS. Returns None on any failure."""
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": "gbrain-graphify-doctor"})
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def latest_gbrain_version() -> str | None:
+    """Latest official GBrain release (GitHub releases, falling back to tags)."""
+    override = os.environ.get("GBRAIN_GRAPHIFY_LATEST_GBRAIN")
+    if override:
+        return override.strip() or None
+    payload = _http_json("https://api.github.com/repos/garrytan/gbrain/releases/latest")
+    tag = payload.get("tag_name") if isinstance(payload, dict) else None
+    if isinstance(tag, str) and tag:
+        return tag.lstrip("v")
+    payload = _http_json("https://api.github.com/repos/garrytan/gbrain/tags")
+    if isinstance(payload, list) and payload:
+        name = payload[0].get("name")
+        if isinstance(name, str) and name:
+            return name.lstrip("v")
+    return None
+
+
+def latest_graphify_version() -> str | None:
+    """Latest official Graphify release from PyPI."""
+    override = os.environ.get("GBRAIN_GRAPHIFY_LATEST_GRAPHIFY")
+    if override:
+        return override.strip() or None
+    payload = _http_json("https://pypi.org/pypi/graphifyy/json")
+    if isinstance(payload, dict):
+        info = payload.get("info")
+        version = info.get("version") if isinstance(info, dict) else None
+        if isinstance(version, str) and version:
+            return version
     return None
 
 
@@ -600,10 +642,10 @@ def main() -> int:
         print(json.dumps(result, indent=2))
         return 0 if result.get("ok") else 1
 
-    versions = json.loads((ROOT / "versions.json").read_text(encoding="utf-8"))
-
     actual_gbrain = gbrain_version()
     actual_graphify = graphify_version()
+    latest_gbrain = latest_gbrain_version()
+    latest_graphify = latest_graphify_version()
     gbrain_path = shutil.which("gbrain")
     graphify_path = shutil.which("graphify")
     graphify_mcp_path = shutil.which("graphify-mcp")
@@ -616,20 +658,26 @@ def main() -> int:
     graphify_mcp_path_ok = bool(graphify_mcp_path and Path(graphify_mcp_path).is_absolute())
     checks: dict[str, object] = {
         "gbrain_binary": {
-            "ok": gbrain_path_ok and actual_gbrain == versions["gbrain"]["version"],
+            "ok": gbrain_path_ok and (latest_gbrain is None or actual_gbrain == latest_gbrain),
             "path": gbrain_path,
             "absolutePath": gbrain_path_ok,
             "version": actual_gbrain,
-            "expected": versions["gbrain"]["version"],
-            "versionOk": actual_gbrain == versions["gbrain"]["version"],
+            "latest": latest_gbrain,
+            "versionOk": (actual_gbrain == latest_gbrain) if latest_gbrain is not None else None,
+            "versionCheck": "unknown" if latest_gbrain is None else (
+                "ok" if actual_gbrain == latest_gbrain else "stale"
+            ),
         },
         "graphify_binary": {
-            "ok": graphify_path_ok and actual_graphify == versions["graphify"]["version"],
+            "ok": graphify_path_ok and (latest_graphify is None or actual_graphify == latest_graphify),
             "path": graphify_path,
             "absolutePath": graphify_path_ok,
             "version": actual_graphify,
-            "expected": versions["graphify"]["version"],
-            "versionOk": actual_graphify == versions["graphify"]["version"],
+            "latest": latest_graphify,
+            "versionOk": (actual_graphify == latest_graphify) if latest_graphify is not None else None,
+            "versionCheck": "unknown" if latest_graphify is None else (
+                "ok" if actual_graphify == latest_graphify else "stale"
+            ),
         },
         "graphify_mcp_binary": {
             "ok": graphify_mcp_path_ok,
@@ -691,7 +739,7 @@ def main() -> int:
     for name, value in checks.items():
         if not isinstance(value, dict) or not value.get("ok"):
             required_ok = False
-        if name in {"gbrain_binary", "graphify_binary"} and not value.get("versionOk"):
+        if name in {"gbrain_binary", "graphify_binary"} and value.get("versionCheck") == "stale":
             required_ok = False
     report: dict[str, object] = {"ok": required_ok, "checks": checks}
 
@@ -704,7 +752,7 @@ def main() -> int:
         base = f"{bootstrap} {agent_flag} {selected}"
         recovery: list[str] = []
         binaries = (checks["gbrain_binary"], checks["graphify_binary"])
-        if any(item.get("path") and not item.get("versionOk") for item in binaries):
+        if any(item.get("path") and item.get("versionCheck") == "stale" for item in binaries):
             recovery.append(f"{base} {upgrade_flag}")
         elif any(not item.get("path") for item in binaries):
             recovery.append(base)

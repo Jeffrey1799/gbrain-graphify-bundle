@@ -1,6 +1,6 @@
 # GBrain + Graphify One-shot Installer
 
-This repository installs pinned GBrain and Graphify builds for Codex, Claude
+This repository installs the latest official GBrain and Graphify releases for Codex, Claude
 Code, Google Antigravity, WorkBuddy, Cursor, and VS Code. Both MCP servers use local stdio transport; no
 HTTP listener, OAuth flow, API key, or background service is created.
 
@@ -48,7 +48,8 @@ user-level MCP file is changed. Add `-DryRun`/`--dry-run` to inspect without
 writing. Upgrade, conflict replacement, and China mirrors require the explicit
 switches documented by `gbrain-graphify-setup`.
 
-Setup succeeds only when pinned versions, host registrations, GBrain health,
+Setup succeeds only when the installed GBrain and Graphify versions match the
+latest official releases (network permitting), host registrations, GBrain health,
 and direct MCP `initialize` plus `tools/list` checks all pass. The user must
 restart the agent session once after a successful installation.
 
